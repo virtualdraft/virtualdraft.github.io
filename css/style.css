@@ -27,8 +27,8 @@
   /* 意味色：本指名・育成・競合・抽選待ち */
   --main: #0071E3;
   --main-bg: #E8F1FC;
-  --dev: #248A3D;
-  --dev-bg: #E9F5EC;
+  --dev: #48484A;      /* 育成：濃いグレー */
+  --dev-bg: #EDEDF0;
   --hot: #D70015;
   --hot-bg: #FDEBED;
   --pending: #B25000;
@@ -36,7 +36,7 @@
   --live: #FF3B30;
   /* スコアボード（黒）上の意味色 */
   --sb-main: #2997FF;
-  --sb-dev: #30D158;
+  --sb-dev: #D1D1D6;   /* 黒いスコアボード上の育成：明るいグレー */
   --sb-hot: #FF453A;
 
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro JP", "SF Pro Text", "Hiragino Sans", "Noto Sans JP", "Helvetica Neue", sans-serif;
@@ -51,7 +51,7 @@
     --page: #000000; --band: #111113; --tile: #1C1C1E; --tile-alt: #161618;
     --ink: #F5F5F7; --ink-2: #D2D2D7; --muted: #A1A1A6; --line: #3A3A3C;
     --link: #2997FF; --nav: rgba(22, 22, 23, .8); --nav-ink: #F5F5F7; --dark: #1C1C1E;
-    --main: #2997FF; --main-bg: #0A2540; --dev: #30D158; --dev-bg: #0D2A16;
+    --main: #2997FF; --main-bg: #0A2540; --dev: #AEAEB2; --dev-bg: #2C2C2E;
     --hot: #FF453A; --hot-bg: #3A1210; --pending: #FF9F0A; --pending-bg: #3A2608;
   }
 }
@@ -60,7 +60,7 @@
   --page: #000000; --band: #111113; --tile: #1C1C1E; --tile-alt: #161618;
   --ink: #F5F5F7; --ink-2: #D2D2D7; --muted: #A1A1A6; --line: #3A3A3C;
   --link: #2997FF; --nav: rgba(22, 22, 23, .8); --nav-ink: #F5F5F7; --dark: #1C1C1E;
-  --main: #2997FF; --main-bg: #0A2540; --dev: #30D158; --dev-bg: #0D2A16;
+  --main: #2997FF; --main-bg: #0A2540; --dev: #AEAEB2; --dev-bg: #2C2C2E;
   --hot: #FF453A; --hot-bg: #3A1210; --pending: #FF9F0A; --pending-bg: #3A2608;
 }
 
@@ -219,7 +219,7 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 /* ===== Status ===== */
 .status { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
 .status time { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
-.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dev); flex: none; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--main); flex: none; }
 .status-dot.is-live { background: var(--live); animation: pulse 1.4s infinite; }
 .status-dot.is-error { background: var(--pending); }
 .status-dot.is-loading { background: var(--muted); animation: pulse 1s infinite; }
@@ -471,3 +471,138 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .board thead th { font-size: 13px; }
 .board thead th a { white-space: nowrap; }
 .nobr { display: inline-block; }
+
+/* =========================================================
+   追加機能：注目選手・NPB所属選手・指名人数シミュレーション
+   ========================================================= */
+.center { text-align: center; }
+.mono { font-family: var(--mono); }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.tag-dev { background: var(--dev-bg); color: var(--dev); }
+
+/* フィルター（参考デザインのチップ） */
+.filters { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: center; margin: 8px 0 24px; }
+.filter-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.fchip { font: inherit; font-size: 14px; padding: 6px 16px; border-radius: 980px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+.fchip:hover { border-color: var(--ink); }
+.fchip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--page); }
+
+/* ② 注目選手 */
+.prospect-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.prospect { background: var(--band); border-radius: var(--r-tile); padding: 26px 28px; display: grid; gap: 12px; align-content: start; }
+.prospect-top { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pcat { font-size: 12px; font-weight: 700; color: var(--link); }
+.pbadge { font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 980px; background: var(--tile); color: var(--muted); }
+.pbadge.ok { color: var(--link); }
+.pbadge.warn { background: var(--pending-bg); color: var(--pending); }
+.prospect-name { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.prospect-name h2 { font-size: clamp(26px, 3.4vw, 32px); }
+.kana { font-size: 13px; color: var(--muted); letter-spacing: .08em; }
+.prospect-team { font-size: 17px; font-weight: 700; }
+.prospect-team .from { font-weight: 400; font-size: 14px; color: var(--muted); }
+.prospect-meta { font-size: 14px; color: var(--ink-2); }
+.prospect-meta .sep::before { content: "・"; color: var(--muted); }
+.pstats { display: flex; gap: 10px; flex-wrap: wrap; }
+.pstats div { background: #000; color: #F5F5F7; border-radius: 12px; padding: 8px 14px; display: grid; gap: 0; }
+.pstats span { font-size: 11px; color: #86868B; }
+.pstats b { font-family: var(--mono); font-size: 22px; font-weight: 500; line-height: 1.2; }
+.phigh { margin: 0; padding-left: 1.1em; font-size: 14px; color: var(--ink-2); display: grid; gap: 4px; }
+.pcomment { background: var(--tile); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; }
+.pcomment .k { font-size: 12px; font-weight: 700; color: var(--link); }
+.pcomment p { font-size: 15px; line-height: 1.75; }
+.prospect-foot { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.experts { font-size: 13px; color: var(--muted); display: inline-flex; align-items: center; gap: 4px; }
+.experts b { color: var(--ink); font-family: var(--mono); font-weight: 500; margin-left: 2px; }
+.edot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); display: inline-block; }
+.edot.on { background: var(--ink); }
+.drafted { font-size: 13px; font-weight: 700; padding: 3px 12px; border-radius: 980px; background: var(--ink); color: var(--page); display: inline-flex; align-items: center; gap: 6px; }
+.drafted::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--team); }
+.psrc { font-size: 12px; color: var(--muted); }
+
+/* ① NPB 所属選手 */
+.npb-table, .roster-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 760px; }
+.npb-table th, .npb-table td, .roster-table th, .roster-table td { padding: 11px 12px; border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); text-align: left; white-space: nowrap; }
+.npb-table thead th, .roster-table thead th { position: sticky; top: 0; background: var(--dark); color: var(--dark-ink); font-size: 12px; font-weight: 700; z-index: 1; }
+.npb-table thead th.num, .roster-table thead th.num { text-align: right; }
+.npb-table tbody td, .npb-table tbody th, .roster-table tbody td { background: var(--tile); }
+.npb-table tbody tr:hover td, .npb-table tbody tr:hover th, .roster-table tbody tr:hover td { background: var(--tile-alt); }
+.tname { font-weight: 700; color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+.tname::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--team); }
+.cap { display: inline-flex; align-items: center; gap: 10px; }
+.cap b { font-family: var(--mono); font-weight: 500; color: var(--main); }
+.cap-bar { width: 120px; height: 6px; background: var(--band); border-radius: 3px; overflow: hidden; display: inline-block; }
+.cap-bar i { display: block; height: 100%; background: var(--main); border-radius: 3px; }
+.npb-table td.open { color: var(--link); font-weight: 700; }
+.heat { background: color-mix(in srgb, var(--main) calc(var(--a) * 22%), var(--tile)) !important; }
+.roster-table .pname a { color: var(--ink); font-weight: 700; }
+.roster-table .pname a:hover { color: var(--link); }
+
+/* 年齢分布（積み上げ棒） */
+.age-chart { margin: 0; display: grid; gap: 10px; }
+.age-chart .legend { justify-content: flex-end; }
+.plot { position: relative; height: 200px; margin-left: 26px; border-bottom: 1px solid var(--line); }
+.gl { position: absolute; left: 0; right: 0; border-top: 1px dashed color-mix(in srgb, var(--line) 70%, transparent); }
+.gl span { position: absolute; left: -26px; top: -8px; font-size: 11px; color: var(--muted); font-family: var(--mono); width: 22px; text-align: right; }
+.bars { position: absolute; inset: 0; display: flex; align-items: stretch; gap: 3px; }
+.col { flex: 1; position: relative; display: flex; flex-direction: column; justify-content: flex-end; outline: none; }
+.col:hover .seg, .col:focus-visible .seg { filter: brightness(1.15); }
+.col:focus-visible { box-shadow: 0 0 0 2px var(--link); border-radius: 4px; }
+.stack { display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; height: 100%; }
+.seg { display: block; width: 100%; min-height: 2px; }
+.seg.main { background: var(--main); }
+.seg.dev { background: var(--dev); }
+.stack .seg:first-child { border-radius: 4px 4px 0 0; }
+.xl { position: absolute; bottom: -20px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--muted); font-family: var(--mono); }
+.age-chart figcaption { margin-top: 16px; }
+.chart-tip { position: fixed; z-index: 50; transform: translate(-50%, calc(-100% - 12px)); background: var(--dark); color: var(--dark-ink); font-size: 13px; padding: 6px 10px; border-radius: 8px; pointer-events: none; white-space: nowrap; }
+
+/* ③ シミュレーション */
+.sim-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 0 24px; align-items: start; }
+.sim-side { position: sticky; top: 64px; }
+.sim-side .scoreboard { margin-top: 40px; }
+.sim-side .sb-cells { grid-template-columns: 1fr 1fr; row-gap: 14px; }
+.sim-side .sb-cell:nth-child(3) { border-left: 0; }
+.sim-inputs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.sim-inputs label { display: grid; gap: 6px; font-size: 13px; color: var(--muted); font-weight: 700; }
+.sim-inputs span { display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 400; }
+.sim-inputs input { font: inherit; font-family: var(--mono); font-size: 20px; width: 90px; padding: 6px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--tile); color: var(--ink); }
+.formula { margin-top: 14px; font-size: 13px; color: var(--muted); line-height: 1.8; }
+.formula b { color: var(--ink); }
+.sim-compare { margin-top: 14px; background: var(--band); border-radius: 14px; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; align-items: center; }
+.sim-compare span:first-child { width: 100%; color: var(--muted); }
+.sim-compare .over { color: var(--hot); font-weight: 700; }
+.sim-compare .ok { color: var(--link); font-weight: 700; }
+.sim-pos { margin-top: 14px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.sim-pos div { background: var(--band); border-radius: 12px; padding: 10px; display: grid; justify-items: center; gap: 2px; }
+.sim-pos span { font-size: 12px; color: var(--muted); }
+.sim-pos b { font-family: var(--mono); font-weight: 500; font-size: 16px; }
+.sim-pos i { font-style: normal; color: var(--muted); margin: 0 4px; }
+.sim-table select { font: inherit; font-size: 14px; padding: 5px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--tile); color: var(--ink); }
+.sim-table tr:not(.act-stay) td { background: var(--tile-alt); }
+.sim-table tr:not(.act-stay) .pname { color: var(--muted); text-decoration: line-through; }
+.sim-table tr.act-toDev .pname, .sim-table tr.act-toMain .pname { text-decoration: none; color: var(--ink); }
+.sim-table tr.act-release select, .sim-table tr.act-retire select, .sim-table tr.act-leave select { border-color: var(--hot); color: var(--hot); }
+.sim-table tr.act-toDev select { border-color: var(--dev); color: var(--dev); }
+.sim-table tr.act-toMain select { border-color: var(--main); color: var(--main); }
+.sim-table { min-width: 560px; }
+.sub-title .sw { vertical-align: middle; }
+
+@media (max-width: 1023px) {
+  .sim-layout { grid-template-columns: 1fr; }
+  .sim-side { position: static; order: -1; }
+  .sim-side .sb-cells { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sim-side .sb-cell:nth-child(3) { border-left: 1px solid #333; }
+}
+@media (max-width: 820px) {
+  .prospect-grid { grid-template-columns: 1fr; }
+  .sim-inputs { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .prospect { padding: 22px; }
+  .sim-side .sb-cells { grid-template-columns: 1fr 1fr; }
+  .sim-side .sb-cell:nth-child(3) { border-left: 0; }
+  .sim-pos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .xl { font-size: 9px; }
+}
+.sim-layout > *, .team-cols > * { min-width: 0; }
+@media (max-width: 1023px) { .sim-layout { grid-template-columns: minmax(0, 1fr); } }

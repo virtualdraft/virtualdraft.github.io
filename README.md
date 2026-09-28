@@ -39,6 +39,19 @@
 - 「選択終了」「不参加」は選手として数えず、ボード上に「選択終了」と表示します。担当者の「？」は「未定」と表示します。
 - 別の書式（縦持ち形式など）にも対応しています。見本は [data/template-grid.csv](data/template-grid.csv)・[data/template-long.csv](data/template-long.csv)。
 
+## 追加機能（注目選手・NPB所属選手・指名人数シミュレーション）
+
+| URL | 内容 |
+| --- | --- |
+| `/#/prospects` | ドラフト会議2026の注目選手（`data/prospects.json`） |
+| `/#/npb` | NPB 12球団の所属選手（支配下・育成、年齢・ポジション分布） |
+| `/#/npb/giants` | 球団別の所属選手・年齢分布・選手一覧 |
+| `/#/sim/giants` | 戦力外などを設定して指名人数を検討（各自のブラウザにのみ保存） |
+
+- **NPB所属選手**：`scripts/fetch_rosters.py` が NPB公式「選手一覧」を取得して `data/rosters.json` を作ります。GitHub Actions（`.github/workflows/rosters.yml`）が毎日5時・17時（日本時間）に実行し、変更があれば自動でコミット・公開します。GitHub の「Actions」タブから手動実行もできます。取得に失敗した場合は既存データを残します。
+- **注目選手**：`data/prospects.json` を編集して更新します。寸評はサイト独自の見解で、記録・経歴には出典URLを付けています。志望届の提出状況は自動更新されないため、公式一覧を確認して手で更新してください。
+- **シミュレーション**：支配下の上限（`rosterLimit`）と年齢の基準日（`ageBaseDate`）は `js/config.js` で変更できます。
+
 ## 更新・障害時の動作
 
 - 会議中（`event.start`〜`event.end`）は約60秒ごとに、それ以外は10分ごとに再取得します（`pollIntervalLive` / `pollIntervalIdle`）。タブを表示し直したときと「今すぐ更新」を押したときにも再取得します。
@@ -60,5 +73,8 @@ js/config.js      開催情報・ルール・リンク・球団・データ取�
 js/data.js        シート取得・整形・キャッシュ
 js/app.js         画面描画・URL・自動更新
 js/demo.js        取得元未設定時のデモデータ
+js/features.js    注目選手・NPB所属選手・シミュレーション
+scripts/          NPB選手一覧の取得スクリプト
+.github/workflows NPB選手データの定期更新
 data/             シート書式の見本
 ```

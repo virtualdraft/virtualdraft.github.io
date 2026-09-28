@@ -176,6 +176,9 @@
           <a class="quick-card" href="#/${y}"><span class="quick-t">ドラフトボード</span><span class="quick-d">1位競合・本指名・育成指名を一覧で</span><span class="quick-go">ドラフトボードを開く</span></a>
           ${CFG.sheetUrl ? ext(CFG.sheetUrl, '<span class="quick-t">運営スプレッドシート</span><span class="quick-d">指名入力・集計の正本（閲覧）</span><span class="quick-go">スプレッドシートを開く</span>', 'quick-card') : '<span class="quick-card is-disabled"><span class="quick-t">運営スプレッドシート</span><span class="quick-d">リンク未設定</span></span>'}
           <a class="quick-card" href="#/archive"><span class="quick-t">過去の結果</span><span class="quick-d">2019〜${y - 1}年のアーカイブ</span><span class="quick-go">アーカイブを開く</span></a>
+          <a class="quick-card" href="#/prospects"><span class="quick-t">注目選手</span><span class="quick-d">ドラフト会議${y}の1位候補を中心に紹介</span><span class="quick-go">注目選手を見る</span></a>
+          <a class="quick-card" href="#/npb"><span class="quick-t">NPB 12球団の所属選手</span><span class="quick-d">支配下・育成の人数、年齢・ポジションの分布</span><span class="quick-go">戦力を見る</span></a>
+          <a class="quick-card" href="#/sim/${CFG.teams[0].id}"><span class="quick-t">指名人数シミュレーション</span><span class="quick-d">戦力外などを設定し、支配下枠から指名人数を検討</span><span class="quick-go">シミュレーションを開く</span></a>
         </div>`)}
       ${band(true, 'teams', '', '参加12球団', res ? `最終更新 ${fmtDateTime(res.fetchedAt)}${res.source === 'demo' ? '（デモデータ）' : ''}` : '', `
         ${res && res.error ? `<div class="alert">最新データを取得できませんでした。${res.model ? '前回取得分を表示しています。' : ''} ${sheetLink('運営シートを開く', 'inline-link')}</div>` : ''}
@@ -440,6 +443,8 @@
     if (!parts.length) return { name: 'home', year: CFG.currentYear };
     if (parts[0] === 'archive') return { name: 'archive' };
     if (parts[0] === 'rules') return { name: 'rules' };
+    const feature = window.DraftFeatures && window.DraftFeatures.parse(parts);
+    if (feature) return { ...feature, feature: true };
     const year = Number(parts[0]);
     if (!YEARS.includes(year)) return { name: 'home', year: CFG.currentYear };
     if (!parts[1]) return { name: 'board', year };
@@ -456,6 +461,7 @@
     switch (route.name) {
       case 'archive': html = viewArchive(); title = '年度別アーカイブ'; break;
       case 'rules': html = viewRules(); title = 'ルール・選択手順'; break;
+      case 'prospects': case 'npb': case 'npbTeam': case 'sim': html = window.DraftFeatures.view(route); title = route.title; break;
       case 'board': html = viewBoard(route.year); title = `${route.year}年 ドラフトボード`; break;
       case 'teams': html = viewTeams(route.year); title = `${route.year}年 球団別結果`; break;
       case 'team': html = viewTeam(route.year, route.id); title = `${teamById(route.id).short}（${route.year}年）`; break;
@@ -467,7 +473,8 @@
     document.querySelectorAll('.site-nav a').forEach(a => {
       const n = a.dataset.nav;
       const on = (n === 'home' && route.name === 'home') || (n === 'board' && route.name === 'board') ||
-        (n === 'teams' && (route.name === 'teams' || route.name === 'team')) || (n === 'archive' && route.name === 'archive') || (n === 'rules' && route.name === 'rules');
+        (n === 'teams' && (route.name === 'teams' || route.name === 'team')) || (n === 'archive' && route.name === 'archive') || (n === 'rules' && route.name === 'rules') ||
+        (n === 'prospects' && route.name === 'prospects') || (n === 'npb' && (route.name === 'npb' || route.name === 'npbTeam')) || (n === 'sim' && route.name === 'sim');
       a.classList.toggle('is-active', on);
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
@@ -516,6 +523,14 @@
       refresh(y).then(schedule);
     }
   });
+
+  // 追加機能（js/features.js）向けの共通部品
+  window.DraftUI = {
+    h, ext, teamChip, player, scoreboard, fmtDateTime,
+    currentResult: () => state.results[CFG.currentYear],
+    rerender: () => render(),
+  };
+  if (window.DraftFeatures) window.DraftFeatures.attach(app);
 
   // ヘッダーの年度リンクを現在年に
   document.querySelectorAll('[data-nav="board"]').forEach(a => (a.href = `#/${CFG.currentYear}`));
