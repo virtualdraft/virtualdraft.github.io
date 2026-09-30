@@ -142,7 +142,7 @@ window.DRAFT_CONFIG = {
     {
       label: '大学生：2026年度プロ野球志望届提出者',
       org: '全日本大学野球連盟',
-      url: 'https://www.jubf.net/system/prog/procandidate.php?kind=top',
+      url: 'https://www.jubf.net/system/prog/procandidate.php?kind=all&year=2026',
     },
   ],
 
