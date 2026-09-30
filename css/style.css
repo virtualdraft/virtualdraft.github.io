@@ -606,3 +606,16 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 }
 .sim-layout > *, .team-cols > * { min-width: 0; }
 @media (max-width: 1023px) { .sim-layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* 注目選手：写真リンク・公式動画 */
+.pmedia { display: flex; flex-wrap: wrap; gap: 8px; }
+.pbtn { display: inline-flex; align-items: center; gap: 4px; font: inherit; font-size: 14px; padding: 7px 16px; border-radius: 980px; border: 1px solid var(--link); background: transparent; color: var(--link); cursor: pointer; }
+.pbtn:hover { background: var(--link); color: var(--btn-ink); text-decoration: none; }
+.pbtn small { font-size: 12px; opacity: .85; }
+.pbtn-video { background: var(--ink); border-color: var(--ink); color: var(--page); }
+.pbtn-video:hover { background: var(--ink-2); border-color: var(--ink-2); color: var(--page); }
+.pvideo-slot:empty { display: none; }
+.pvideo-slot { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #000; }
+.pvideo-slot.is-vertical { aspect-ratio: 9 / 16; max-width: 320px; margin: 0 auto; }
+.pvideo-slot iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.pvideo-cap { font-size: 12px; color: var(--muted); margin-top: -6px; }

@@ -1,6 +1,6 @@
 {
   "year": 2026,
-  "updated": "2026-09-28",
+  "updated": "2026-10-01",
   "note": "寸評は本サイト運営による独自の見解です。記録・経歴は各出典の記事にもとづきます。志望届の受付日は日本高等学校野球連盟・全日本大学野球連盟の公示（2026年9月28日時点）によります。",
   "experts": {
     "label": "識者3人が選んだ2026ドラフト候補「トップ12」（スポーツナビ、2026年9月25日）",
@@ -8,218 +8,827 @@
   },
   "players": [
     {
-      "name": "菰田 陽生", "kana": "こもだ はるき", "category": "高校生", "team": "山梨学院高", "grade": "3年",
-      "pos": "投手・野手", "posGroup": "二刀流", "hand": "右投右打", "size": "190cm台・100kg",
-      "stats": [{ "label": "最速", "value": "152km/h" }, { "label": "高校通算", "value": "39本塁打" }],
-      "highlights": ["2年春の関東大会・叡明戦で8者連続奪三振", "投打の「二刀流」として12球団が注目"],
+      "name": "菰田 陽生",
+      "kana": "こもだ はるき",
+      "category": "高校生",
+      "team": "山梨学院高",
+      "grade": "3年",
+      "pos": "投手・野手",
+      "posGroup": "二刀流",
+      "hand": "右投右打",
+      "size": "190cm台・100kg",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "152km/h"
+        },
+        {
+          "label": "高校通算",
+          "value": "39本塁打"
+        }
+      ],
+      "highlights": [
+        "2年春の関東大会・叡明戦で8者連続奪三振",
+        "投打の「二刀流」として12球団が注目"
+      ],
       "comment": "高校生離れした体格から、投げては最速152キロ、打っては通算39本塁打。投手・打者のどちらでも1位評価ができる今年最大の大器だ。どちらに絞るか、二刀流を続けるかは指名球団の方針次第で、その将来像も含めて最も注目を集める存在。",
-      "shibou": { "status": "提出済", "date": "9月7日" }, "experts": 3,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月7日"
+      },
+      "experts": 3,
       "sources": [
-        { "label": "Full-Count（2026/9/8）", "url": "https://full-count.jp/2026/09/08/post2013673/" },
-        { "label": "スポーツナビ（2026/9/25）", "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi" }
-      ]
+        {
+          "label": "Full-Count（2026/9/8）",
+          "url": "https://full-count.jp/2026/09/08/post2013673/"
+        },
+        {
+          "label": "スポーツナビ（2026/9/25）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/463/komoda_haruki"
+      },
+      "video": {
+        "id": "0T8zLaehY2k",
+        "channel": "【公式】TBS スポーツ",
+        "title": "高校ラストシーズンに密着",
+        "vertical": false
+      }
     },
     {
-      "name": "織田 翔希", "kana": "おだ しょうき", "category": "高校生", "team": "横浜高", "grade": "3年",
-      "pos": "投手", "posGroup": "投手", "hand": "右投", "size": "185cm",
-      "stats": [{ "label": "甲子園最速", "value": "156km/h" }],
-      "highlights": ["2年春のセンバツで優勝", "3年夏の甲子園で4強。準々決勝・花巻東戦で10奪三振完封", "甲子園の大会史上最速となる156キロをマーク"],
+      "name": "織田 翔希",
+      "kana": "おだ しょうき",
+      "category": "高校生",
+      "team": "横浜高",
+      "grade": "3年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "右投",
+      "size": "185cm",
+      "stats": [
+        {
+          "label": "甲子園最速",
+          "value": "156km/h"
+        }
+      ],
+      "highlights": [
+        "2年春のセンバツで優勝",
+        "3年夏の甲子園で4強。準々決勝・花巻東戦で10奪三振完封",
+        "甲子園の大会史上最速となる156キロをマーク"
+      ],
       "comment": "しなやかな腕の振りから150キロ台中盤を連発する世代屈指の本格派右腕。最終学年の夏は新たにスライダーを武器に加え、大会史上最速の156キロと完封劇で進化を示した。線の細さが残る分、プロでの伸びしろも大きい。",
-      "shibou": { "status": "提出済", "date": "9月17日" }, "experts": 3,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月17日"
+      },
+      "experts": 3,
       "sources": [
-        { "label": "高校野球ドットコム（10K完封）", "url": "https://www.hb-nippon.com/articles/16466" },
-        { "label": "高校野球ドットコム（156キロ）", "url": "https://www.hb-nippon.com/articles/16267" },
-        { "label": "スポーツナビ（2026/9/25）", "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi" }
-      ]
+        {
+          "label": "高校野球ドットコム（10K完封）",
+          "url": "https://www.hb-nippon.com/articles/16466"
+        },
+        {
+          "label": "高校野球ドットコム（156キロ）",
+          "url": "https://www.hb-nippon.com/articles/16267"
+        },
+        {
+          "label": "スポーツナビ（2026/9/25）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/463/oda_shouki"
+      },
+      "video": {
+        "id": "fXdEGgKHzTc",
+        "channel": "バーチャル高校野球公式チャンネル",
+        "title": "甲子園史上最速156キロ（日南学園戦）",
+        "vertical": false
+      }
     },
     {
-      "name": "鈴木 泰成", "kana": "すずき たいせい", "category": "大学生", "team": "青山学院大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "右投右打", "size": "187cm・90kg", "from": "東海大菅生高",
-      "stats": [{ "label": "最速", "value": "154km/h" }],
-      "highlights": ["2026年春の東都大学リーグで最優秀投手", "侍ジャパン大学代表"],
+      "name": "鈴木 泰成",
+      "kana": "すずき たいせい",
+      "category": "大学生",
+      "team": "青山学院大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "右投右打",
+      "size": "187cm・90kg",
+      "from": "東海大菅生高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "154km/h"
+        }
+      ],
+      "highlights": [
+        "2026年春の東都大学リーグで最優秀投手",
+        "侍ジャパン大学代表"
+      ],
       "comment": "長身からしなやかに腕を振り、指にかかった直球と落ちる球で空振りを奪う。先発・リリーフの両方で実績があり、識者からも「投手ならNo.1」の声が上がる。即戦力でありながら伸びしろも評価される大学ナンバーワン右腕。",
-      "shibou": { "status": "提出済", "date": "9月14日" }, "experts": 3,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月14日"
+      },
+      "experts": 3,
       "sources": [
-        { "label": "Draft Watch（最速154キロ）", "url": "https://draft-watch.com/articles/33c2172b-2bdd-432e-80bd-cf69cb4e586b" },
-        { "label": "スポーツナビ（2026/9/25）", "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi" }
-      ]
+        {
+          "label": "Draft Watch（最速154キロ）",
+          "url": "https://draft-watch.com/articles/33c2172b-2bdd-432e-80bd-cf69cb4e586b"
+        },
+        {
+          "label": "スポーツナビ（2026/9/25）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/467/suzuki_taisei"
+      },
+      "video": {
+        "id": "pyCI7MzAzMU",
+        "channel": "SPORTS BULL公式",
+        "title": "初先発で153キロ完投勝利",
+        "vertical": true
+      }
     },
     {
-      "name": "渡部 海", "kana": "わたべ かい", "category": "大学生", "team": "青山学院大", "grade": "4年",
-      "pos": "捕手", "posGroup": "捕手", "hand": "右投右打", "size": "180cm・88kg", "from": "智弁和歌山高",
+      "name": "渡部 海",
+      "kana": "わたべ かい",
+      "category": "大学生",
+      "team": "青山学院大",
+      "grade": "4年",
+      "pos": "捕手",
+      "posGroup": "捕手",
+      "hand": "右投右打",
+      "size": "180cm・88kg",
+      "from": "智弁和歌山高",
       "stats": [],
-      "highlights": ["智弁和歌山で2年夏に甲子園優勝を経験した捕手", "青山学院大で4番・正捕手としてリーグ優勝を重ねる"],
+      "highlights": [
+        "智弁和歌山で2年夏に甲子園優勝を経験した捕手",
+        "青山学院大で4番・正捕手としてリーグ優勝を重ねる"
+      ],
       "comment": "守れて打てて、しかも勝てる。めったに出てこない完成度の捕手だ。捕ってから投げるまでの動作に無駄がなく、打っては勝負どころで結果を残す。チームの精神的支柱にもなれる人材で、捕手を補強したい球団が多い今年は1位での重複も予想される。",
-      "shibou": { "status": "提出済", "date": "9月14日" }, "experts": 3,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月14日"
+      },
+      "experts": 3,
       "sources": [
-        { "label": "ベースボールチャンネル", "url": "https://www.baseballchannel.jp/etc/286674/" },
-        { "label": "スポーツナビ（2026/9/25）", "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi" }
-      ]
+        {
+          "label": "ベースボールチャンネル",
+          "url": "https://www.baseballchannel.jp/etc/286674/"
+        },
+        {
+          "label": "スポーツナビ（2026/9/25）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/468/watabe_kai"
+      },
+      "video": {
+        "id": "jq1IbTYigWc",
+        "channel": "SPORTS BULL公式",
+        "title": "首位攻防戦で2試合連続の活躍",
+        "vertical": true
+      }
     },
     {
-      "name": "宮原 廉", "kana": "みやはら れん", "category": "大学生", "team": "近畿大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "右投", "size": "182cm・88kg", "from": "崇徳高",
-      "stats": [{ "label": "最速", "value": "154km/h" }],
-      "highlights": ["3年春・秋のリーグ戦で計9勝0敗", "侍ジャパン大学代表候補の強化合宿に招集"],
+      "name": "宮原 廉",
+      "kana": "みやはら れん",
+      "category": "大学生",
+      "team": "近畿大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "右投",
+      "size": "182cm・88kg",
+      "from": "崇徳高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "154km/h"
+        }
+      ],
+      "highlights": [
+        "3年春・秋のリーグ戦で計9勝0敗",
+        "侍ジャパン大学代表候補の強化合宿に招集"
+      ],
       "comment": "「東の鈴木、西の宮原」と並び称される関西屈指の本格派右腕。角度のある150キロ超の直球とフォークで押し込む投球スタイルで、上位指名は確実との評価が定着している。",
-      "shibou": { "status": "提出済", "date": "9月10日" }, "experts": 3,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月10日"
+      },
+      "experts": 3,
       "sources": [
-        { "label": "webスポルティーバ", "url": "https://news.yahoo.co.jp/articles/6d55aea1b360dac0d61fa6583f6424793effe657" },
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/university/univ-draftnews/88812/" }
-      ]
+        {
+          "label": "webスポルティーバ",
+          "url": "https://news.yahoo.co.jp/articles/6d55aea1b360dac0d61fa6583f6424793effe657"
+        },
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/university/univ-draftnews/88812/"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/467/miyahara_ren"
+      }
     },
     {
-      "name": "米沢 友翔", "kana": "よねざわ ゆうと", "category": "大学生", "team": "関西大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "左投左打", "size": "180cm", "from": "金沢高",
-      "stats": [{ "label": "最速", "value": "154km/h" }],
-      "highlights": ["2026年の全日本大学選手権で最優秀選手。関西大の54年ぶり日本一の原動力に", "2026年春のリーグ戦で7勝1敗・96奪三振"],
+      "name": "米沢 友翔",
+      "kana": "よねざわ ゆうと",
+      "category": "大学生",
+      "team": "関西大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "左投左打",
+      "size": "180cm",
+      "from": "金沢高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "154km/h"
+        }
+      ],
+      "highlights": [
+        "2026年の全日本大学選手権で最優秀選手。関西大の54年ぶり日本一の原動力に",
+        "2026年春のリーグ戦で7勝1敗・96奪三振"
+      ],
       "comment": "鋭く腕を振る左腕で、球速以上に打者を差し込む直球が武器。大学選手権での快投で、大舞台での強さも証明した。関西大の先輩・金丸夢斗に続く「即戦力左腕」として、1位指名の有力候補に名前が挙がる。",
-      "shibou": { "status": "提出済", "date": "9月7日" }, "experts": 3,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月7日"
+      },
+      "experts": 3,
       "sources": [
-        { "label": "MBSニュース", "url": "https://news.yahoo.co.jp/articles/3c65e710cea2f9c3fec4bac09a28192978b2169f" },
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/university/univ-draftnews/88934/" }
-      ]
+        {
+          "label": "MBSニュース",
+          "url": "https://news.yahoo.co.jp/articles/3c65e710cea2f9c3fec4bac09a28192978b2169f"
+        },
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/university/univ-draftnews/88934/"
+        }
+      ],
+      "photo": {
+        "label": "週刊ベースボールONLINE",
+        "url": "https://sp.baseball.findfriends.jp/player/20040161/"
+      },
+      "video": {
+        "id": "_cP1lP7_Ei0",
+        "channel": "J SPORTS 野球【公式】",
+        "title": "大学選手権 関西大－北海学園大 ハイライト",
+        "vertical": false
+      }
     },
     {
-      "name": "前田 侑大", "kana": "まえだ ゆうと", "category": "高校生", "team": "高岡第一高", "grade": "3年",
-      "pos": "投手", "posGroup": "投手", "hand": "左投左打", "size": "173cm",
-      "stats": [{ "label": "最速", "value": "156km/h" }],
-      "highlights": ["侍ジャパンU-18代表候補の強化合宿に参加", "11球団・30人のスカウトが視察した試合も"],
+      "name": "前田 侑大",
+      "kana": "まえだ ゆうと",
+      "category": "高校生",
+      "team": "高岡第一高",
+      "grade": "3年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "左投左打",
+      "size": "173cm",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "156km/h"
+        }
+      ],
+      "highlights": [
+        "侍ジャパンU-18代表候補の強化合宿に参加",
+        "11球団・30人のスカウトが視察した試合も"
+      ],
       "comment": "173センチと小柄ながら、高校生左腕として異例の最速156キロをマーク。回転の良い直球で空振りを奪える。この1年で一気に評価を上げた伸び盛りで、今年の高校生左腕の筆頭格だ。",
-      "shibou": { "status": "提出済", "date": "9月16日" }, "experts": 3,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月16日"
+      },
+      "experts": 3,
       "sources": [
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/87375/" },
-        { "label": "ベースボールチャンネル", "url": "https://www.baseballchannel.jp/etc/286448/" }
-      ]
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/87375/"
+        },
+        {
+          "label": "ベースボールチャンネル",
+          "url": "https://www.baseballchannel.jp/etc/286448/"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/463/maeda_yuto"
+      },
+      "video": {
+        "id": "U5A0fNKKrrg",
+        "channel": "スポニチドラフト",
+        "title": "U18合宿で151キロ【調査ファイル】",
+        "vertical": false
+      }
     },
     {
-      "name": "榊原 七斗", "kana": "さかきばら ななと", "category": "大学生", "team": "明治大", "grade": "4年",
-      "pos": "外野手", "posGroup": "野手", "hand": "左投左打", "size": "173cm・76kg", "from": "報徳学園高",
+      "name": "榊原 七斗",
+      "kana": "さかきばら ななと",
+      "category": "大学生",
+      "team": "明治大",
+      "grade": "4年",
+      "pos": "外野手",
+      "posGroup": "野手",
+      "hand": "左投左打",
+      "size": "173cm・76kg",
+      "from": "報徳学園高",
       "stats": [],
-      "highlights": ["侍ジャパン大学代表", "明治大の中軸を担う左の好打者"],
+      "highlights": [
+        "侍ジャパン大学代表",
+        "東京六大学リーグの現役選手で最多の本塁打",
+        "明治大の中軸を担う左の好打者"
+      ],
       "comment": "体は大きくないが、ミート力と長打力を兼ね備えた左の好打者。強肩の外野手としての評価も高い。識者3人全員がトップ12に挙げた実力者で、プロ志望届の提出が待たれる。",
-      "shibou": { "status": "未提出", "date": "" }, "experts": 3,
+      "shibou": {
+        "status": "未提出",
+        "date": ""
+      },
+      "experts": 3,
       "sources": [
-        { "label": "ベースボールチャンネル", "url": "https://www.baseballchannel.jp/etc/286656/" },
-        { "label": "スポーツナビ（2026/9/25）", "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi" }
-      ]
+        {
+          "label": "ベースボールチャンネル",
+          "url": "https://www.baseballchannel.jp/etc/286656/"
+        },
+        {
+          "label": "スポーツナビ（2026/9/25）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026092300001-spnavi"
+        },
+        {
+          "label": "東京六大学野球連盟「公認」チャンネル",
+          "url": "https://www.youtube.com/watch?v=5TEtcF-Y8P4"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/470/sakakibara_nanato"
+      },
+      "video": {
+        "id": "5TEtcF-Y8P4",
+        "channel": "東京六大学野球連盟「公認」チャンネル",
+        "title": "現役最多本塁打",
+        "vertical": false
+      }
     },
     {
-      "name": "角田 楓斗", "kana": "かくた ふうと", "category": "大学生", "team": "富士大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "右投左打", "size": "178cm・85kg", "from": "東奥義塾高",
-      "stats": [{ "label": "最速", "value": "153km/h" }],
-      "highlights": ["2026年の全日本大学選手権・松山大戦で7回14奪三振", "リーグ戦で3安打完封し優勝"],
+      "name": "角田 楓斗",
+      "kana": "かくた ふうと",
+      "category": "大学生",
+      "team": "富士大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "右投左打",
+      "size": "178cm・85kg",
+      "from": "東奥義塾高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "153km/h"
+        }
+      ],
+      "highlights": [
+        "2026年の全日本大学選手権・松山大戦で7回14奪三振",
+        "リーグ戦で3安打完封し優勝"
+      ],
       "comment": "コンスタントに150キロ前後を投げ込む馬力と、カーブで緩急をつける投球が持ち味の右腕。全国の舞台で奪三振ショーを演じ、北東北から一気に1位候補へ浮上した。",
-      "shibou": { "status": "提出済", "date": "9月16日" }, "experts": 2,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月16日"
+      },
+      "experts": 2,
       "sources": [
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/university/univ-draftnews/88935/" }
-      ]
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/university/univ-draftnews/88935/"
+        }
+      ],
+      "photo": {
+        "label": "週刊ベースボールONLINE",
+        "url": "https://sp.baseball.findfriends.jp/player/20040168/"
+      },
+      "video": {
+        "id": "AuGd6L0idWo",
+        "channel": "J SPORTS 野球【公式】",
+        "title": "大学選手権 松山大－富士大 ハイライト",
+        "vertical": false
+      }
     },
     {
-      "name": "藤澤 涼介", "kana": "ふじさわ りょうすけ", "category": "社会人", "team": "東京ガス", "grade": "",
-      "pos": "外野手", "posGroup": "野手", "hand": "右投右打", "size": "", "from": "佐野日大高 → 横浜国立大",
+      "name": "藤澤 涼介",
+      "kana": "ふじさわ りょうすけ",
+      "category": "社会人",
+      "team": "東京ガス",
+      "grade": "",
+      "pos": "外野手",
+      "posGroup": "野手",
+      "hand": "右投右打",
+      "size": "",
+      "from": "佐野日大高 → 横浜国立大",
       "stats": [],
-      "highlights": ["一般入試で横浜国立大の理工学部へ進み、リーグ戦でベストナイン", "都市対抗予選で3試合連続本塁打"],
+      "highlights": [
+        "一般入試で横浜国立大の理工学部へ進み、リーグ戦でベストナイン",
+        "都市対抗予選で3試合連続本塁打"
+      ],
       "comment": "国立大の理系学部から社会人の強豪へ進んだ異色の経歴を持つスラッガー。広角に強い打球を飛ばす打撃で入社1年目から中軸を担い、「社会人No.1野手」との声もある即戦力外野手だ。",
-      "shibou": { "status": "不要", "date": "" }, "experts": 2,
+      "shibou": {
+        "status": "不要",
+        "date": ""
+      },
+      "experts": 2,
       "sources": [
-        { "label": "Number Web", "url": "https://number.bunshun.jp/articles/-/871708?page=3" },
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/syakai/syakai-draftnews/86564/" }
-      ]
+        {
+          "label": "Number Web",
+          "url": "https://number.bunshun.jp/articles/-/871708?page=3"
+        },
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/syakai/syakai-draftnews/86564/"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/474/fujisawa_ryosuke"
+      },
+      "video": {
+        "id": "DPYf7ssLbbo",
+        "channel": "JABA station（日本野球連盟）",
+        "title": "都市対抗 東京2次予選 東京ガス－明治安田（試合映像）",
+        "vertical": false
+      }
     },
     {
-      "name": "渡辺 和大", "kana": "わたなべ かずひろ", "category": "大学生", "team": "慶應義塾大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "左投左打", "size": "180cm・75kg", "from": "高松商高",
-      "stats": [{ "label": "最速", "value": "151km/h" }],
-      "highlights": ["2026年の全日本大学選手権・準決勝で大会タイ記録の8者連続三振、15奪三振"],
+      "name": "渡辺 和大",
+      "kana": "わたなべ かずひろ",
+      "category": "大学生",
+      "team": "慶應義塾大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "左投左打",
+      "size": "180cm・75kg",
+      "from": "高松商高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "151km/h"
+        }
+      ],
+      "highlights": [
+        "2026年春の東京六大学リーグで最優秀防御率・ベストナイン",
+        "2026年の全日本大学選手権・準決勝で大会タイ記録の8者連続三振、15奪三振"
+      ],
       "comment": "直球と同じ軌道から曲がるスライダーが最大の武器の本格派左腕。大学選手権での8者連続三振で評価を急上昇させた、この1年で最も伸びた投手の一人だ。",
-      "shibou": { "status": "提出済", "date": "9月5日" }, "experts": 2,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月5日"
+      },
+      "experts": 2,
       "sources": [
-        { "label": "デイリースポーツ（2026/6/13）", "url": "https://www.daily.co.jp/baseball/2026/06/13/0020471971.shtml" },
-        { "label": "高校野球ドットコム", "url": "https://www.hb-nippon.com/articles/14048" }
-      ]
+        {
+          "label": "デイリースポーツ（2026/6/13）",
+          "url": "https://www.daily.co.jp/baseball/2026/06/13/0020471971.shtml"
+        },
+        {
+          "label": "高校野球ドットコム",
+          "url": "https://www.hb-nippon.com/articles/14048"
+        },
+        {
+          "label": "東京六大学野球連盟「公認」チャンネル",
+          "url": "https://www.youtube.com/watch?v=BoXIvewqtYw"
+        }
+      ],
+      "photo": {
+        "label": "週刊ベースボールONLINE",
+        "url": "https://sp.baseball.findfriends.jp/player/20040138/"
+      },
+      "video": {
+        "id": "BoXIvewqtYw",
+        "channel": "東京六大学野球連盟「公認」チャンネル",
+        "title": "2026年春 最優秀防御率・ベストナイン",
+        "vertical": false
+      }
     },
     {
-      "name": "川尻 啓人", "kana": "かわじり けいと", "category": "大学生", "team": "亜細亜大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "右投左打", "size": "189cm・93kg", "from": "高岡商高",
-      "stats": [{ "label": "最速", "value": "158km/h" }],
-      "highlights": ["高校時代は二刀流で甲子園に出場", "大学で投手に専念し、球速を大きく伸ばす"],
+      "name": "川尻 啓人",
+      "kana": "かわじり けいと",
+      "category": "大学生",
+      "team": "亜細亜大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "右投左打",
+      "size": "189cm・93kg",
+      "from": "高岡商高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "158km/h"
+        }
+      ],
+      "highlights": [
+        "高校時代は二刀流で甲子園に出場",
+        "大学で投手に専念し、球速を大きく伸ばす"
+      ],
       "comment": "大学で投手に専念してから一気に出力を上げた大型右腕。150キロ台後半の直球は大学球界でもトップクラスで、制球と変化球の精度が伴えば大化けの可能性を秘める。",
-      "shibou": { "status": "提出済", "date": "9月4日" }, "experts": 1,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月4日"
+      },
+      "experts": 1,
       "sources": [
-        { "label": "スポーツナビ（2026/4/16）", "url": "https://sports.yahoo.co.jp/column/detail/2026041600001-spnavi" },
-        { "label": "サンケイスポーツ", "url": "https://news.yahoo.co.jp/articles/e1ed91b8b9b1b48979aa64d694baf549d8d0a52c" }
-      ]
+        {
+          "label": "スポーツナビ（2026/4/16）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026041600001-spnavi"
+        },
+        {
+          "label": "サンケイスポーツ",
+          "url": "https://news.yahoo.co.jp/articles/e1ed91b8b9b1b48979aa64d694baf549d8d0a52c"
+        }
+      ],
+      "photo": {
+        "label": "週刊ベースボールONLINE",
+        "url": "https://sp.baseball.findfriends.jp/player/20040156/"
+      }
     },
     {
-      "name": "仲井 慎", "kana": "なかい しん", "category": "大学生", "team": "駒澤大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "右投", "size": "", "from": "下関国際高",
-      "stats": [{ "label": "最速", "value": "158km/h" }],
-      "highlights": ["下関国際で2022年夏の甲子園準優勝（投手・遊撃手の二刀流）", "大学で投手に専念し、球速を年々更新"],
+      "name": "仲井 慎",
+      "kana": "なかい しん",
+      "category": "大学生",
+      "team": "駒澤大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "右投",
+      "size": "",
+      "from": "下関国際高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "158km/h"
+        }
+      ],
+      "highlights": [
+        "下関国際で2022年夏の甲子園準優勝（投手・遊撃手の二刀流）",
+        "大学で投手に専念し、球速を年々更新"
+      ],
       "comment": "甲子園準優勝メンバーの二刀流から投手に専念し、最速158キロまで伸ばした剛腕。球威は今年の候補でもトップクラスで、リリーフとしての即戦力性も高い。",
-      "shibou": { "status": "提出済", "date": "9月15日" }, "experts": 1,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月15日"
+      },
+      "experts": 1,
       "sources": [
-        { "label": "ドラフト会議ホームページ（158キロ）", "url": "https://www.draft-kaigi.jp/university/univ-draftnews/86620/" },
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/university/univ-draftnews/88675/" }
-      ]
+        {
+          "label": "ドラフト会議ホームページ（158キロ）",
+          "url": "https://www.draft-kaigi.jp/university/univ-draftnews/86620/"
+        },
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/university/univ-draftnews/88675/"
+        }
+      ],
+      "photo": {
+        "label": "週刊ベースボールONLINE",
+        "url": "https://sp.baseball.findfriends.jp/player/20040099/"
+      }
     },
     {
-      "name": "有馬 伽久", "kana": "ありま がく", "category": "大学生", "team": "立命館大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "左投", "size": "175cm・77kg", "from": "愛工大名電高",
-      "stats": [{ "label": "最速", "value": "151km/h" }],
-      "highlights": ["2025年の明治神宮大会で10者連続奪三振の大会新記録（53年ぶりの更新）"],
+      "name": "有馬 伽久",
+      "kana": "ありま がく",
+      "category": "大学生",
+      "team": "立命館大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "左投",
+      "size": "175cm・77kg",
+      "from": "愛工大名電高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "151km/h"
+        }
+      ],
+      "highlights": [
+        "2025年の明治神宮大会で10者連続奪三振の大会新記録（53年ぶりの更新）"
+      ],
       "comment": "多彩な変化球を操る完成度の高い左腕。神宮大会での10者連続奪三振は半世紀以上破られなかった記録の更新で、決め球を複数持つ投球術がスカウトから高く評価されている。",
-      "shibou": { "status": "提出済", "date": "9月12日" }, "experts": 1,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月12日"
+      },
+      "experts": 1,
       "sources": [
-        { "label": "産経新聞", "url": "https://news.yahoo.co.jp/articles/aa600d80df9d1aceebc6c7c1019282a85cc00ecd" },
-        { "label": "立命館大学", "url": "https://www.ritsumei.ac.jp/features/r_na_hito/entry/?post=294" }
-      ]
+        {
+          "label": "産経新聞",
+          "url": "https://news.yahoo.co.jp/articles/aa600d80df9d1aceebc6c7c1019282a85cc00ecd"
+        },
+        {
+          "label": "立命館大学",
+          "url": "https://www.ritsumei.ac.jp/features/r_na_hito/entry/?post=294"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/467/arima_gaku"
+      },
+      "video": {
+        "id": "I7PnPnlEDQo",
+        "channel": "プロ野球ドラフトちゃんねる（スカイA・ABC公式）",
+        "title": "明治神宮大会で10者連続奪三振",
+        "vertical": false
+      }
     },
     {
-      "name": "馬場 拓海", "kana": "ばば たくみ", "category": "大学生", "team": "日本体育大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "右投右打", "size": "184cm・88kg", "from": "福岡大大濠高",
-      "stats": [{ "label": "最速", "value": "150km/h台" }],
-      "highlights": ["体を大きくひねるフォームから投げ込む変則右腕", "「プロ一本」を表明"],
+      "name": "馬場 拓海",
+      "kana": "ばば たくみ",
+      "category": "大学生",
+      "team": "日本体育大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "右投右打",
+      "size": "184cm・88kg",
+      "from": "福岡大大濠高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "150km/h台"
+        }
+      ],
+      "highlights": [
+        "体を大きくひねるフォームから投げ込む変則右腕",
+        "「プロ一本」を表明"
+      ],
       "comment": "独特のフォームから150キロ前後の力強い直球とカットボールを投げ込む変則右腕。打者のタイミングを外せる希少なタイプで、リリーフでの早期の戦力化が期待される。",
-      "shibou": { "status": "提出済", "date": "9月6日" }, "experts": 1,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月6日"
+      },
+      "experts": 1,
       "sources": [
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/university/univ-draftnews/87307/" }
-      ]
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/university/univ-draftnews/87307/"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/467/baba_takumi"
+      }
     },
     {
-      "name": "星野 世那", "kana": "ほしの せな", "category": "大学生", "team": "大阪商業大", "grade": "4年",
-      "pos": "投手", "posGroup": "投手", "hand": "左投左打", "size": "179cm・78kg", "from": "近江高",
-      "stats": [{ "label": "最速", "value": "140km/h台後半" }],
-      "highlights": ["近江高では控え投手として甲子園に出場", "大学でエースへと成長"],
+      "name": "星野 世那",
+      "kana": "ほしの せな",
+      "category": "大学生",
+      "team": "大阪商業大",
+      "grade": "4年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "左投左打",
+      "size": "179cm・78kg",
+      "from": "近江高",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "151km/h"
+        }
+      ],
+      "highlights": [
+        "近江高では控え投手として甲子園に出場",
+        "大学でエースへと成長"
+      ],
       "comment": "高校時代は控え投手だったが、大学でエースへと成長した遅咲きの左腕。スライダーとチェンジアップを交えた安定感のある投球で、まだ伸びしろを残している。",
-      "shibou": { "status": "提出済", "date": "9月12日" }, "experts": 1,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月12日"
+      },
+      "experts": 1,
       "sources": [
-        { "label": "スポーツナビ（2026/5/20）", "url": "https://sports.yahoo.co.jp/column/detail/2026052000003-spnavi" }
-      ]
+        {
+          "label": "スポーツナビ（2026/5/20）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026052000003-spnavi"
+        },
+        {
+          "label": "週刊ベースボールONLINE（2026/8/24）",
+          "url": "https://column.sp.baseball.findfriends.jp/?id=022-20260824-03&pid=column_detail"
+        }
+      ],
+      "photo": {
+        "label": "週刊ベースボールONLINE",
+        "url": "https://sp.baseball.findfriends.jp/player/20040152/"
+      }
     },
     {
-      "name": "平田 玲翔", "kana": "ひらた れいと", "category": "高校生", "team": "大分商高", "grade": "3年",
-      "pos": "投手", "posGroup": "投手", "hand": "右投右打", "size": "180cm台後半",
-      "stats": [{ "label": "最速", "value": "152km/h" }],
-      "highlights": ["3年夏に甲子園出場", "打者としても評価される二刀流から「投手でプロ一本」を表明"],
+      "name": "平田 玲翔",
+      "kana": "ひらた れいと",
+      "category": "高校生",
+      "team": "大分商高",
+      "grade": "3年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "右投右打",
+      "size": "180cm台後半",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "152km/h"
+        }
+      ],
+      "highlights": [
+        "3年夏に甲子園出場",
+        "打者としても評価される二刀流から「投手でプロ一本」を表明"
+      ],
       "comment": "長身から角度のある直球を投げ下ろす大型右腕。打者としても評価された身体能力の高さが魅力で、投手に専念すればさらなる球速アップも見込める素材型だ。",
-      "shibou": { "status": "提出済", "date": "9月2日" }, "experts": 1,
+      "shibou": {
+        "status": "提出済",
+        "date": "9月2日"
+      },
+      "experts": 1,
       "sources": [
-        { "label": "ドラフト会議ホームページ（甲子園）", "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/88225/" },
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/87938/" }
-      ]
+        {
+          "label": "ドラフト会議ホームページ（甲子園）",
+          "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/88225/"
+        },
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/87938/"
+        }
+      ],
+      "photo": {
+        "label": "高校野球ドットコム",
+        "url": "https://www.hb-nippon.com/players/28099"
+      },
+      "video": {
+        "id": "w-e5dHsGzbs",
+        "channel": "バーチャル高校野球公式チャンネル",
+        "title": "甲子園で150キロ超の速球（日本文理戦）",
+        "vertical": false
+      }
     },
     {
-      "name": "末吉 良丞", "kana": "すえよし りょうすけ", "category": "高校生", "team": "沖縄尚学高", "grade": "3年",
-      "pos": "投手", "posGroup": "投手", "hand": "左投", "size": "",
-      "stats": [{ "label": "最速", "value": "150km/h" }],
-      "highlights": ["2年夏の甲子園で優勝投手に", "春に左ひじを痛めたが、夏の沖縄大会で復帰し147キロを計測"],
+      "name": "末吉 良丞",
+      "kana": "すえよし りょうすけ",
+      "category": "高校生",
+      "team": "沖縄尚学高",
+      "grade": "3年",
+      "pos": "投手",
+      "posGroup": "投手",
+      "hand": "左投",
+      "size": "",
+      "stats": [
+        {
+          "label": "最速",
+          "value": "150km/h"
+        }
+      ],
+      "highlights": [
+        "2年夏の甲子園で優勝投手に",
+        "春に左ひじを痛めたが、夏の沖縄大会で復帰し147キロを計測"
+      ],
       "comment": "2年夏に全国制覇を経験した実績十分の左腕。強い下半身から投げ込む直球とスライダーが武器だ。春に左ひじを痛めた影響を各球団がどう判断するかが、指名順位を左右しそうだ。",
-      "shibou": { "status": "提出済", "date": "8月23日" }, "experts": 0,
+      "shibou": {
+        "status": "提出済",
+        "date": "8月23日"
+      },
+      "experts": 0,
       "sources": [
-        { "label": "webスポルティーバ（2026/3/18）", "url": "https://sportiva.shueisha.co.jp/clm/baseball/hs_other/2026/03/18/_150v/" },
-        { "label": "ドラフト会議ホームページ", "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/87849/" }
-      ]
+        {
+          "label": "webスポルティーバ（2026/3/18）",
+          "url": "https://sportiva.shueisha.co.jp/clm/baseball/hs_other/2026/03/18/_150v/"
+        },
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/87849/"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/463/sueyoshi_ryosuke"
+      },
+      "video": {
+        "id": "82mSuyrvluM",
+        "channel": "琉球新報",
+        "title": "沖縄尚学の練習に密着",
+        "vertical": false
+      }
     }
   ]
 }

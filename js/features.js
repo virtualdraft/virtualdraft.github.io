@@ -104,7 +104,7 @@
           ${chips('p-pos', f.pos, [['all', '投手・野手'], ['投手', '投手'], ['野手', '野手']])}
         </div>
         <ul class="prospect-grid">${list.map(p => prospectCard(p)).join('') || '<li class="muted center">該当する選手はいません。</li>'}</ul>
-        <p class="cite center">${h(d.note)}<br>識者評価：${ext(d.experts.url, h(d.experts.label))}で、3人それぞれが選んだ12人に入った人数。</p>`;
+        <p class="cite center">${h(d.note)}</p>`;
     }
     return `<div class="container">
       <div class="page-head"><div><p class="eyebrow">ドラフト会議 ${CFG.currentYear}</p><h1 class="page-title">注目選手</h1>
@@ -128,10 +128,12 @@
       ${p.stats.length ? `<div class="pstats">${p.stats.map(s => `<div><span>${h(s.label)}</span><b>${h(s.value)}</b></div>`).join('')}</div>` : ''}
       <ul class="phigh">${p.highlights.map(x => `<li>${h(x)}</li>`).join('')}</ul>
       <div class="pcomment"><span class="k">寸評</span><p>${h(p.comment)}</p></div>
-      <div class="prospect-foot">
-        <span class="experts" aria-label="識者3人中${p.experts}人がトップ12に選出">識者評価 ${[0, 1, 2].map(i => `<i class="edot${i < p.experts ? ' on' : ''}"></i>`).join('')} <b>${p.experts}/3</b></span>
-        ${dr ? `<span class="drafted" style="--team:${dr.team.color}">仮想ドラフト：${h(dr.team.short)} ${h(dr.label)}</span>` : ''}
+      <div class="pmedia">
+        ${p.photo ? ext(p.photo.url, `写真・プロフィール<small>（${h(p.photo.label)}）</small>`, 'pbtn') : ''}
+        ${p.video ? `<button type="button" class="pbtn pbtn-video" data-video="${h(p.video.id)}" data-vertical="${p.video.vertical ? 1 : 0}" aria-label="${h(p.name)}の動画を再生（${h(p.video.channel)}）">▶ 動画を見る</button>` : ''}
       </div>
+      ${p.video ? `<div class="pvideo-slot" data-slot="${h(p.video.id)}"></div><p class="pvideo-cap">動画：${h(p.video.title)}（${h(p.video.channel)}）</p>` : ''}
+      ${dr ? `<div class="prospect-foot"><span class="drafted" style="--team:${dr.team.color}">仮想ドラフト：${h(dr.team.short)} ${h(dr.label)}</span></div>` : ''}
       <p class="psrc">出典：${p.sources.map(s => ext(s.url, h(s.label))).join('、')}</p>
     </li>`;
   }
@@ -430,6 +432,27 @@
         const target = { p: view.prospects, r: view.roster, s: view.sim }[grp];
         target[key] = b.dataset.v;
         UI().rerender();
+        return;
+      }
+      const vb = e.target.closest('[data-video]');
+      if (vb) {
+        const id = vb.dataset.video;
+        const slot = app.querySelector(`[data-slot="${CSS.escape(id)}"]`);
+        if (slot && !slot.firstChild) {
+          const f = document.createElement('iframe');
+          f.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
+          f.title = vb.getAttribute('aria-label');
+          f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+          f.allowFullscreen = true;
+          f.loading = 'lazy';
+          f.referrerPolicy = 'strict-origin-when-cross-origin';
+          slot.classList.toggle('is-vertical', vb.dataset.vertical === '1');
+          slot.appendChild(f);
+          vb.textContent = '▼ 動画を閉じる';
+        } else if (slot) {
+          slot.innerHTML = '';
+          vb.textContent = '▶ 動画を見る';
+        }
         return;
       }
       if (e.target.closest('[data-sim="reset"]')) {
