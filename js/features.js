@@ -33,6 +33,8 @@
   const needRosters = () => loadJSON('rosters', 'data/rosters.json');
   const needProspects = () => loadJSON('prospects', 'data/prospects.json');
   const needStats = () => loadJSON('stats', 'data/stats.json');
+  // 「シーズン貢献度」ページの名前（URL は #/depth/<球団> のまま）
+  const SEASON_LABEL = `${CFG.currentYear}年シーズン貢献度`;
 
   // ---------- 共通 ----------
   const baseDate = new Date((CFG.ageBaseDate || '2027-04-01') + 'T00:00:00+09:00');
@@ -214,7 +216,7 @@
               <td class="num c-dev"><b>${s.dev}</b></td>
               <td class="num">${s.avgMain.toFixed(1)}</td>
               ${POS.map(p => `<td class="num heat" style="--a:${(s.posMain[p] / maxPos).toFixed(2)}">${s.posMain[p]}</td>`).join('')}
-              <td><a href="#/depth/${t.id}" class="linkish">デプス表 ›</a>　<a href="#/sim/${t.id}" class="linkish">シミュレーション ›</a></td>
+              <td><a href="#/depth/${t.id}" class="linkish">${SEASON_LABEL} ›</a>　<a href="#/sim/${t.id}" class="linkish">シミュレーション ›</a></td>
             </tr>`).join('')}</tbody>
           </table></div>
           <p class="note center">ポジション別の人数は支配下選手のみ。色の濃さは人数の多さを表します。</p>
@@ -283,7 +285,7 @@
           { label: '育成', value: s.dev, unit: '名', cls: 'sb-dev' },
           { label: '支配下の平均年齢', value: s.avgMain.toFixed(1), unit: '歳' },
         ])}
-        <div class="live-cta" style="margin-top:20px"><a class="btn" href="#/depth/${id}">デプス表を見る</a><a class="btn ghost" href="#/sim/${id}">この球団で指名人数をシミュレーション</a></div>
+        <div class="live-cta" style="margin-top:20px"><a class="btn" href="#/depth/${id}">${SEASON_LABEL}を見る</a><a class="btn ghost" href="#/sim/${id}">この球団で指名人数をシミュレーション</a></div>
         <div class="team-cols">
           <section class="section panel"><h2 class="section-title">年齢分布</h2>${ageChart(players)}</section>
           <aside class="section panel"><h2 class="section-title">ポジション別人数</h2>${posBlock(s)}</aside>
@@ -437,7 +439,7 @@
     </div>`;
   }
 
-  // ---------- デプス表 ----------
+  // ---------- シーズン貢献度（ポジション別の序列・年齢） ----------
   // 名前の突き合わせ用キー（scripts/fetch_stats.py の key() と同じ規則）
   const VARIANTS = { '髙': '高', '﨑': '崎', '德': '徳', '濵': '浜', '邊': '辺', '邉': '辺', '俠': '侠', '齋': '斎', '齊': '斉', '槇': '槙', '𠮷': '吉', '栁': '柳', '冨': '富', '曻': '昇', '瀨': '瀬', '惠': '恵', '黑': '黒' };
   const statKey = name => [...name.normalize('NFKC').replace(/[\s*+︀-️]|[\u{E0100}-\u{E01EF}]/gu, '')].map(c => VARIANTS[c] || c).join('');
@@ -514,7 +516,7 @@
     const team = CFG.teams.find(t => t.id === id);
     needRosters(); needStats();
     let body;
-    if (!store.rosters || !store.stats) body = loadingBlock(!store.rosters ? 'rosters' : 'stats', 'デプス表のデータ');
+    if (!store.rosters || !store.stats) body = loadingBlock(!store.rosters ? 'rosters' : 'stats', `${SEASON_LABEL}のデータ`);
     else {
       const applySim = view.depth.sim === 'on';
       const d = depthData(id, applySim);
@@ -555,7 +557,7 @@
           出典：${ext('https://npb.jp/bis/' + (store.stats.year || CFG.currentYear) + '/stats/', 'NPB.jp 日本野球機構「個人守備成績」「個人投手成績」')}（一軍・ファーム）。本サイトで毎日自動取得しています。</p>`;
     }
     return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow"><a href="#/npb/${id}">${h(team.name)}の所属選手</a></p><h1 class="page-title">デプス表</h1>
+      <div class="page-head"><div><p class="eyebrow"><a href="#/npb/${id}">${h(team.name)}の所属選手</a></p><h1 class="page-title">${SEASON_LABEL}</h1>
         <p class="muted">ポジションごとの序列と年齢を、今季の一軍・二軍の出場実績から並べています。</p></div></div>
       ${teamSwitch('depth', id)}
       ${body}
@@ -666,7 +668,7 @@
         : { name: 'npb', title: 'NPB 12球団の所属選手' };
       if (parts[0] === 'depth') {
         const id = ids.includes(parts[1]) ? parts[1] : ids[0];
-        return { name: 'depth', id, title: `デプス表（${CFG.teams.find(t => t.id === id).short}）` };
+        return { name: 'depth', id, title: `${SEASON_LABEL}（${CFG.teams.find(t => t.id === id).short}）` };
       }
       if (parts[0] === 'sim') {
         const id = ids.includes(parts[1]) ? parts[1] : ids[0];
