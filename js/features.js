@@ -12,7 +12,7 @@
   const MAX_MAIN = CFG.rosterLimit || 70;
   const POS = ['投手', '捕手', '内野手', '外野手'];
   const store = { rosters: null, prospects: null, loading: {}, error: {} };
-  const view = { prospects: { cat: 'all', pos: 'all' }, roster: { status: 'all', pos: 'all', sort: 'no' }, sim: { pos: 'all', sort: 'no' } };
+  const view = { prospects: { cat: 'all', pos: 'all' }, roster: { status: 'all', pos: 'all', sort: 'no' }, sim: { pos: 'all', sort: 'no' }, depth: { sim: 'off' } };
 
   // ---------- データ読み込み ----------
   async function loadJSON(key, url) {
@@ -32,6 +32,7 @@
   }
   const needRosters = () => loadJSON('rosters', 'data/rosters.json');
   const needProspects = () => loadJSON('prospects', 'data/prospects.json');
+  const needStats = () => loadJSON('stats', 'data/stats.json');
 
   // ---------- 共通 ----------
   const baseDate = new Date((CFG.ageBaseDate || '2027-04-01') + 'T00:00:00+09:00');
@@ -213,7 +214,7 @@
               <td class="num c-dev"><b>${s.dev}</b></td>
               <td class="num">${s.avgMain.toFixed(1)}</td>
               ${POS.map(p => `<td class="num heat" style="--a:${(s.posMain[p] / maxPos).toFixed(2)}">${s.posMain[p]}</td>`).join('')}
-              <td><a href="#/sim/${t.id}" class="linkish">シミュレーション ›</a></td>
+              <td><a href="#/depth/${t.id}" class="linkish">デプス表 ›</a>　<a href="#/sim/${t.id}" class="linkish">シミュレーション ›</a></td>
             </tr>`).join('')}</tbody>
           </table></div>
           <p class="note center">ポジション別の人数は支配下選手のみ。色の濃さは人数の多さを表します。</p>
@@ -282,7 +283,7 @@
           { label: '育成', value: s.dev, unit: '名', cls: 'sb-dev' },
           { label: '支配下の平均年齢', value: s.avgMain.toFixed(1), unit: '歳' },
         ])}
-        <div class="live-cta" style="margin-top:20px"><a class="btn" href="#/sim/${id}">この球団で指名人数をシミュレーション</a></div>
+        <div class="live-cta" style="margin-top:20px"><a class="btn" href="#/depth/${id}">デプス表を見る</a><a class="btn ghost" href="#/sim/${id}">この球団で指名人数をシミュレーション</a></div>
         <div class="team-cols">
           <section class="section panel"><h2 class="section-title">年齢分布</h2>${ageChart(players)}</section>
           <aside class="section panel"><h2 class="section-title">ポジション別人数</h2>${posBlock(s)}</aside>
@@ -436,6 +437,131 @@
     </div>`;
   }
 
+  // ---------- デプス表 ----------
+  // 名前の突き合わせ用キー（scripts/fetch_stats.py の key() と同じ規則）
+  const VARIANTS = { '髙': '高', '﨑': '崎', '德': '徳', '濵': '浜', '邊': '辺', '邉': '辺', '俠': '侠', '齋': '斎', '齊': '斉', '槇': '槙', '𠮷': '吉', '栁': '柳', '冨': '富', '曻': '昇', '瀨': '瀬', '惠': '恵', '黑': '黒' };
+  const statKey = name => [...name.normalize('NFKC').replace(/[\s*+︀-️]|[\u{E0100}-\u{E01EF}]/gu, '')].map(c => VARIANTS[c] || c).join('');
+  const DEPTH_FIELD = [['C', '捕手'], ['1B', '一塁'], ['2B', '二塁'], ['3B', '三塁'], ['SS', '遊撃'], ['OF', '外野']];
+  const fmtIp = ip => { const w = Math.floor(ip + 1e-6); const f = Math.round((ip - w) * 3); return f ? `${w}.${f}` : `${w}`; };
+  const AGE_OLD = 33, AGE_YOUNG = 25;
+  const DEPTH_SHOW = 8; // 各ポジションで最初に表示する人数
+  const ageBand = a => a == null ? '' : a <= 24 ? 'a1' : a <= 29 ? 'a2' : a <= 33 ? 'a3' : 'a4';
+
+  function depthData(id, applySim) {
+    const st = store.stats.teams[id] || { field1: {}, field2: {}, pitch1: {}, pitch2: {} };
+    let players = teamPlayers(id);
+    const sim = loadSim(id, players.filter(p => p.status === '育成').length);
+    const marked = Object.keys(sim.marks).length;
+    if (applySim) {
+      players = players.filter(p => !['release', 'retire', 'leave'].includes(sim.marks[p.key]))
+        .map(p => sim.marks[p.key] === 'toDev' ? { ...p, status: '育成', simNote: '育成で再契約' }
+          : sim.marks[p.key] === 'toMain' ? { ...p, status: '支配下', simNote: '支配下へ昇格' } : p);
+    }
+    const cols = { SP: [], RP: [], CL: [] }; DEPTH_FIELD.forEach(([k]) => (cols[k] = []));
+    const none = [];
+    players.forEach(p => {
+      const k = statKey(p.name);
+      if (p.pos === '投手') {
+        const a = st.pitch1[k], b = st.pitch2[k];
+        const e = { p, g1: a ? a.g : 0, ip1: a ? a.ip : 0, sv1: a ? a.sv : 0, hld1: a ? a.hld : 0, g2: b ? b.g : 0, ip2: b ? b.ip : 0, sv2: b ? b.sv : 0 };
+        if (!e.g1 && !e.g2) { none.push(p); return; }
+        if (e.sv1 >= 5) cols.CL.push(e);
+        else if (e.g1 ? e.ip1 / e.g1 >= 3 : e.ip2 / e.g2 >= 3) cols.SP.push(e);
+        else cols.RP.push(e);
+        return;
+      }
+      let any = false;
+      const totals = DEPTH_FIELD.map(([pos]) => ({ pos, g1: (st.field1[pos] || {})[k] || 0, g2: (st.field2[pos] || {})[k] || 0 }));
+      const best = totals.reduce((m, x) => (x.g1 * 10 + x.g2 > m.g1 * 10 + m.g2 ? x : m), totals[0]);
+      totals.forEach(x => {
+        // 一軍で守った、またはファームで5試合以上、または主に守るポジション
+        if (x.g1 > 0 || x.g2 >= 5 || (x === best && x.g2 > 0)) { cols[x.pos].push({ p, g1: x.g1, g2: x.g2 }); any = true; }
+      });
+      if (!any) none.push(p);
+    });
+    cols.SP.sort((a, b) => b.ip1 - a.ip1 || b.ip2 - a.ip2);
+    cols.RP.sort((a, b) => (b.g1 + b.hld1) - (a.g1 + a.hld1) || b.g2 - a.g2);
+    cols.CL.sort((a, b) => b.sv1 - a.sv1);
+    DEPTH_FIELD.forEach(([k]) => cols[k].sort((a, b) => b.g1 - a.g1 || b.g2 - a.g2));
+    return { cols, none, marked, updated: st.updated || '' };
+  }
+
+  function depthFlags(list) {
+    const flags = [];
+    const top = list[0];
+    if (top && top.g1 > 0 && top.p.age != null && top.p.age >= AGE_OLD) flags.push(['old', `主力が${top.p.age}歳`]);
+    if (list.length && !list.some(e => e.p.age != null && e.p.age <= AGE_YOUNG)) flags.push(['young', `${AGE_YOUNG}歳以下が不在`]);
+    if (!list.length) flags.push(['young', '該当者なし']);
+    return flags;
+  }
+
+  function depthRow(e, i, kind) {
+    const { h } = UI();
+    const p = e.p;
+    const line = kind === 'pitch'
+      ? [e.g1 ? `一軍 ${e.g1}登板・${fmtIp(e.ip1)}回${e.sv1 ? `・${e.sv1}S` : ''}${e.hld1 ? `・${e.hld1}H` : ''}` : '', e.g2 ? `二軍 ${e.g2}登板・${fmtIp(e.ip2)}回` : ''].filter(Boolean).join(' / ')
+      : [e.g1 ? `一軍 ${e.g1}試合` : '', e.g2 ? `二軍 ${e.g2}試合` : ''].filter(Boolean).join(' / ');
+    return `<li class="dp-row${e.g1 ? '' : ' is-farm'}">
+      <span class="dp-rank">${i + 1}</span>
+      <span class="dp-main"><span class="dp-name">${h(p.name)}${p.status === '育成' ? '<span class="dp-tag">育成</span>' : ''}${p.simNote ? `<span class="dp-tag sim">${h(p.simNote)}</span>` : ''}</span>
+        <span class="dp-line">${h(line)}</span></span>
+      <span class="age-chip ${ageBand(p.age)}" title="${baseLabel}の年齢">${p.age ?? '—'}</span>
+    </li>`;
+  }
+
+  function viewDepth(id) {
+    const { h, ext } = UI();
+    const team = CFG.teams.find(t => t.id === id);
+    needRosters(); needStats();
+    let body;
+    if (!store.rosters || !store.stats) body = loadingBlock(!store.rosters ? 'rosters' : 'stats', 'デプス表のデータ');
+    else {
+      const applySim = view.depth.sim === 'on';
+      const d = depthData(id, applySim);
+      const col = (key, title, kind, sub) => {
+        const list = d.cols[key];
+        const flags = depthFlags(list);
+        return `<section class="dp-col">
+          <header class="dp-head"><h3>${title}</h3><span class="dp-count">${list.length}名</span></header>
+          ${sub ? `<p class="dp-sub">${sub}</p>` : ''}
+          ${flags.length ? `<div class="dp-flags">${flags.map(([c, t]) => `<span class="dp-flag ${c}">${h(t)}</span>`).join('')}</div>` : ''}
+          <ol class="dp-list">${list.slice(0, DEPTH_SHOW).map((e, i) => depthRow(e, i, kind)).join('') || '<li class="dp-empty">該当者なし</li>'}</ol>
+          ${list.length > DEPTH_SHOW ? `<details class="dp-more"><summary>ほか${list.length - DEPTH_SHOW}名を表示</summary>
+            <ol class="dp-list">${list.slice(DEPTH_SHOW).map((e, i) => depthRow(e, i + DEPTH_SHOW, kind)).join('')}</ol></details>` : ''}
+        </section>`;
+      };
+      const warn = [['SP', '先発'], ['RP', '中継ぎ'], ['CL', '抑え'], ...DEPTH_FIELD].map(([k, t]) => [t, depthFlags(d.cols[k])]).filter(([, f]) => f.length);
+      body = `
+        <div class="filters">
+          ${chips('d-sim', view.depth.sim, [['off', '今季の成績どおり'], ['on', 'シミュレーションを反映（来季）']])}
+        </div>
+        ${applySim ? `<p class="note center">指名数シミュレーションで「戦力外・引退・移籍」にした選手を除いています（設定済み ${d.marked}名）。<a href="#/sim/${id}">シミュレーションを編集 ›</a></p>` : ''}
+        <div class="dp-summary">
+          <span class="lg-k">年齢（${baseLabel}）</span>
+          <span class="age-chip a1">24歳以下</span><span class="age-chip a2">25〜29歳</span><span class="age-chip a3">30〜33歳</span><span class="age-chip a4">34歳以上</span>
+        </div>
+        ${warn.length ? `<div class="dp-warn"><b>年齢面で注意が必要なポジション</b>${warn.map(([t, f]) => `<span>${h(t)}：${f.map(x => h(x[1])).join('・')}</span>`).join('')}</div>` : ''}
+        <div class="dp-group"><h2 class="section-title">投手</h2>
+          <div class="dp-grid">
+            ${col('SP', '先発', 'pitch', '1登板あたり3回以上')}
+            ${col('RP', '中継ぎ', 'pitch', '登板数・ホールド順')}
+            ${col('CL', '抑え', 'pitch', '一軍5セーブ以上')}
+          </div></div>
+        <div class="dp-group"><h2 class="section-title">野手</h2>
+          <div class="dp-grid">${DEPTH_FIELD.map(([k, t]) => col(k, t, 'field', '')).join('')}</div></div>
+        ${d.none.length ? `<section class="section"><h2 class="section-title">今季の出場なし（${d.none.length}名）</h2>
+          <ul class="dp-none">${d.none.map(p => `<li>${h(p.name)}<span class="muted">${h(p.pos)}${p.status === '育成' ? '・育成' : ''}</span><span class="age-chip ${ageBand(p.age)}">${p.age ?? '—'}</span></li>`).join('')}</ul></section>` : ''}
+        <p class="cite center">並び順は今季（${h(d.updated)}現在）の一軍の出場を優先し、二軍の出場で控えを並べています。外野は左翼・中堅・右翼をまとめています。投手の役割は成績から推定しています。<br>
+          出典：${ext('https://npb.jp/bis/' + (store.stats.year || CFG.currentYear) + '/stats/', 'NPB.jp 日本野球機構「個人守備成績」「個人投手成績」')}（一軍・ファーム）。本サイトで毎日自動取得しています。</p>`;
+    }
+    return `<div class="container">
+      <div class="page-head"><div><p class="eyebrow"><a href="#/npb/${id}">${h(team.name)}の所属選手</a></p><h1 class="page-title">デプス表</h1>
+        <p class="muted">ポジションごとの序列と年齢を、今季の一軍・二軍の出場実績から並べています。</p></div></div>
+      ${teamSwitch('depth', id)}
+      ${body}
+    </div>`;
+  }
+
   // ---------- イベント ----------
   function route() {
     const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
@@ -466,7 +592,7 @@
       const b = e.target.closest('[data-f]');
       if (b) {
         const [grp, key] = b.dataset.f.split('-');
-        const target = { p: view.prospects, r: view.roster, s: view.sim }[grp];
+        const target = { p: view.prospects, r: view.roster, s: view.sim, d: view.depth }[grp];
         target[key] = b.dataset.v;
         UI().rerender();
         return;
@@ -538,6 +664,10 @@
       if (parts[0] === 'npb') return parts[1] && ids.includes(parts[1])
         ? { name: 'npbTeam', id: parts[1], title: `${CFG.teams.find(t => t.id === parts[1]).short}の所属選手` }
         : { name: 'npb', title: 'NPB 12球団の所属選手' };
+      if (parts[0] === 'depth') {
+        const id = ids.includes(parts[1]) ? parts[1] : ids[0];
+        return { name: 'depth', id, title: `デプス表（${CFG.teams.find(t => t.id === id).short}）` };
+      }
       if (parts[0] === 'sim') {
         const id = ids.includes(parts[1]) ? parts[1] : ids[0];
         return { name: 'sim', id, title: `指名人数シミュレーション（${CFG.teams.find(t => t.id === id).short}）` };
@@ -549,6 +679,7 @@
       if (r.name === 'npb') return viewNpb();
       if (r.name === 'npbTeam') return viewNpbTeam(r.id);
       if (r.name === 'sim') return viewSim(r.id);
+      if (r.name === 'depth') return viewDepth(r.id);
       return '';
     },
   };

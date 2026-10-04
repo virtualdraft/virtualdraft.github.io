@@ -1,4 +1,4 @@
-# NPB公式「選手一覧」から所属選手データを取得し、data/rosters.json を更新する
+# NPB公式「選手一覧」「個人守備成績」「個人投手成績」を取得し、data/rosters.json と data/stats.json を更新する
 name: NPB所属選手データの更新
 
 on:
@@ -21,14 +21,16 @@ jobs:
           python-version: '3.12'
       - name: 選手一覧を取得
         run: python3 scripts/fetch_rosters.py
+      - name: 守備・投手成績を取得（デプス表用）
+        run: python3 scripts/fetch_stats.py
       - name: 変更があればコミット
         run: |
-          if git diff --quiet -- data/rosters.json; then
+          if git diff --quiet -- data/rosters.json data/stats.json; then
             echo "変更なし"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/rosters.json
+          git add data/rosters.json data/stats.json
           git commit -m "NPB所属選手データを更新"
           git push

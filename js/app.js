@@ -461,7 +461,7 @@
     switch (route.name) {
       case 'archive': html = viewArchive(); title = '年度別アーカイブ'; break;
       case 'rules': html = viewRules(); title = 'ルール・選択手順'; break;
-      case 'prospects': case 'npb': case 'npbTeam': case 'sim': html = window.DraftFeatures.view(route); title = route.title; break;
+      case 'prospects': case 'npb': case 'npbTeam': case 'sim': case 'depth': html = window.DraftFeatures.view(route); title = route.title; break;
       case 'board': html = viewBoard(route.year); title = `${route.year}年 ドラフトボード`; break;
       case 'teams': html = viewTeams(route.year); title = `${route.year}年 球団別結果`; break;
       case 'team': html = viewTeam(route.year, route.id); title = `${teamById(route.id).short}（${route.year}年）`; break;
@@ -474,7 +474,7 @@
       const n = a.dataset.nav;
       const on = (n === 'home' && route.name === 'home') || (n === 'board' && route.name === 'board') ||
         (n === 'teams' && (route.name === 'teams' || route.name === 'team')) || (n === 'archive' && route.name === 'archive') || (n === 'rules' && route.name === 'rules') ||
-        (n === 'prospects' && route.name === 'prospects') || (n === 'npb' && (route.name === 'npb' || route.name === 'npbTeam')) || (n === 'sim' && route.name === 'sim');
+        (n === 'prospects' && route.name === 'prospects') || (n === 'npb' && (route.name === 'npb' || route.name === 'npbTeam' || route.name === 'depth')) || (n === 'sim' && route.name === 'sim');
       a.classList.toggle('is-active', on);
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
