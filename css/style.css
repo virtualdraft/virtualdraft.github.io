@@ -621,3 +621,99 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .pvideo-cap { font-size: 12px; color: var(--muted); margin-top: -6px; }
 /* 見出し・説明文は文節の切れ目で改行（対応ブラウザのみ。非対応でも表示は崩れない） */
 .page-head .muted, .sub, .page-title, .h2 { word-break: auto-phrase; }
+
+/* =========================================================
+   注目選手ボード（ドラフト中継の「第一巡選択選手」一覧を参考）
+   ========================================================= */
+.pboard {
+  --pb-bg: #0b0d12;
+  background-color: var(--pb-bg);
+  background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.025) 0 2px, transparent 2px 14px);
+  color: #fff;
+}
+.pb-wrap { max-width: 1600px; margin: 0 auto; padding: 36px 32px 32px; }
+.pb-head { display: flex; align-items: center; gap: 20px; margin-bottom: 26px; }
+.pb-logo { width: 64px; height: 64px; flex-shrink: 0; background: var(--btn); color: #fff; display: flex; align-items: center; justify-content: center; }
+.pb-spacer { width: 64px; flex-shrink: 0; }
+.pb-title { flex: 1; text-align: center; }
+.pb-title h1 { margin: 0; font-size: clamp(24px, 3.3vw, 52px); font-weight: 900; letter-spacing: .02em; line-height: 1.2; color: #fff; }
+.pb-title h1 small { font-size: .55em; font-weight: 700; margin-left: .2em; color: #c7c9d1; }
+.pb-title p { margin-top: 8px; font-size: 14px; color: #a1a4ad; }
+
+.pb-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; }
+.pb-card {
+  --ac: #2997FF;
+  position: relative; overflow: hidden;
+  min-height: 200px; padding: 18px 14px 16px;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--card-bg, #1a1f2e);
+  border: 3px solid var(--ac);
+  color: #fff; font: inherit; cursor: pointer; text-align: center;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.pb-card::before { content: ""; position: absolute; left: 0; top: 0; width: 40px; height: 40px; background: var(--ac); clip-path: polygon(0 0, 100% 0, 0 100%); }
+.pb-card:hover, .pb-card:focus-visible { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(0,0,0,.5), 0 0 0 1px var(--ac); outline: none; }
+/* カードの地色：区分 */
+.pb-card.cat-hs   { --card-bg: #1c1f27; }
+.pb-card.cat-univ { --card-bg: #14213d; }
+.pb-card.cat-corp { --card-bg: #23252b; }
+/* 枠・左上の三角：ポジション */
+.pb-card.pos-p  { --ac: #e2283c; }
+.pb-card.pos-c  { --ac: #4fa3e0; }
+.pb-card.pos-if { --ac: #ffe100; }
+.pb-card.pos-of { --ac: #9be33c; }
+/* 指名後：地色が球団カラーに */
+.pb-card.is-drafted { --card-bg: color-mix(in srgb, var(--team) 30%, #0f1116); }
+.pb-top { font-size: 16px; font-weight: 700; color: #e6e7eb; }
+.pb-name {
+  margin: 0; font-size: clamp(26px, 2.3vw, 40px); font-weight: 900; line-height: 1.1; white-space: nowrap;
+  text-shadow: 0 0 14px rgba(255,255,255,.35), 0 2px 0 rgba(0,0,0,.6);
+}
+.pb-name.long { font-size: clamp(24px, 2.1vw, 36px); }
+.pb-meta { font-size: 15px; font-weight: 500; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; color: #e6e7eb; }
+
+.pb-legend { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 20px; font-size: 13px; color: #a1a4ad; }
+.pb-legend .lg { display: inline-flex; align-items: center; gap: 8px; color: #e6e7eb; }
+.pb-legend .lg::before { content: ""; width: 14px; height: 14px; clip-path: polygon(0 0, 100% 0, 0 100%); background: var(--lg); }
+.pb-legend .lg-k { font-weight: 700; color: #c7c9d1; }
+.pb-legend .hs, .pb-legend .univ, .pb-legend .corp { --lg: none; }
+.pb-legend .lg.hs::before, .pb-legend .lg.univ::before, .pb-legend .lg.corp::before { clip-path: none; width: 16px; height: 16px; background: var(--sw); outline: 1px solid rgba(255,255,255,.35); }
+.pb-legend .hs { --sw: #1c1f27; } .pb-legend .univ { --sw: #14213d; } .pb-legend .corp { --sw: #23252b; }
+.pb-legend .p { --lg: #e2283c; }
+.pb-legend .c { --lg: #4fa3e0; }
+.pb-legend .if { --lg: #ffe100; }
+.pb-legend .of { --lg: #9be33c; }
+.pboard .status { color: #a1a4ad; }
+
+/* 個別紹介（従来のカード）へのジャンプ */
+.page-head-sub { padding-top: 48px; }
+.prospect { scroll-margin-top: 64px; }
+.prospect.is-flash { animation: pflash 1.6s ease; }
+@keyframes pflash { 0%, 30% { box-shadow: 0 0 0 3px var(--link); } 100% { box-shadow: 0 0 0 3px transparent; } }
+
+@media (max-width: 1279px) { .pb-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .pb-name { font-size: clamp(30px, 3.6vw, 42px); } }
+@media (max-width: 900px)  { .pb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pb-name { font-size: clamp(28px, 5.4vw, 42px); } .pb-name.long { font-size: clamp(26px, 5vw, 38px); } }
+@media (max-width: 600px) {
+  .pb-wrap { padding: 22px 16px 24px; }
+  .pb-head { gap: 12px; margin-bottom: 18px; }
+  .pb-logo { width: 44px; height: 44px; }
+  .pb-logo svg { width: 26px; height: 26px; }
+  .pb-spacer { display: none; }
+  .pb-title { text-align: left; }
+  .pb-grid { gap: 10px; }
+  .pb-card { min-height: 132px; padding: 12px 8px 10px; border-width: 2px; }
+  .pb-card::before { width: 26px; height: 26px; }
+  .pb-top { font-size: 12px; }
+  .pb-name { font-size: 24px; }
+  .pb-name.long { font-size: 21px; }
+  .pb-meta { font-size: 12px; gap: 2px 10px; }
+}
+/* 投手と野手を兼ねる選手：枠を斜めに2色（左上が1つ目のポジション） */
+.pb-card.pos2-p  { --ac2: #e2283c; }
+.pb-card.pos2-c  { --ac2: #4fa3e0; }
+.pb-card.pos2-if { --ac2: #ffe100; }
+.pb-card.pos2-of { --ac2: #9be33c; }
+.pb-card[class*="pos2-"] { border-image: linear-gradient(135deg, var(--ac) 50%, var(--ac2) 50%) 1; }
+.pb-legend .two { --lg: linear-gradient(135deg, #e2283c 50%, #ffe100 50%); }
+.pb-legend .two::before { clip-path: none; }
+.pb-meta { gap: 4px 12px; }

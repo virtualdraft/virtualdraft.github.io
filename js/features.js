@@ -106,21 +106,58 @@
         <ul class="prospect-grid">${list.map(p => prospectCard(p)).join('') || '<li class="muted center">該当する選手はいません。</li>'}</ul>
         <p class="cite center">${h(d.note)}</p>`;
     }
-    return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow">ドラフト会議 ${CFG.currentYear}</p><h1 class="page-title">注目選手</h1>
-        <p class="muted">1位候補を中心に、実績とプレースタイルを紹介します。</p></div></div>
-      ${body}
-    </div>`;
+    return `${prospectBoard(d)}
+      <div class="container">
+        <div class="page-head page-head-sub"><div><h2 class="page-title">選手紹介</h2>
+          <p class="muted">実績とプレースタイル、寸評を選手ごとに紹介します。</p></div></div>
+        ${body}
+      </div>`;
+  }
+
+  // 注目選手ボード（ドラフト中継の「第一巡選択選手」一覧を参考にした一覧表示）
+  const pid = p => 'prospect-' + p.name.replace(/\s/g, '');
+  // ドラフト中継で使われる表記（指名後のカード上部に表示）
+  const BOARD_NAME = {
+    giants: '読売', tigers: '阪神', baystars: '横浜DeNA', carp: '広島東洋', swallows: '東京ヤクルト', dragons: '中日',
+    hawks: '福岡ソフトバンク', fighters: '北海道日本ハム', marines: '千葉ロッテ', eagles: '東北楽天', buffaloes: 'オリックス', lions: '埼玉西武',
+  };
+  function prospectBoard(d) {
+    const { h } = UI();
+    const cards = d ? d.players.map(p => {
+      const dr = draftedBy(p);
+      const cat = { 高校生: 'hs', 大学生: 'univ', 社会人: 'corp' }[p.category] || 'univ';
+      // 枠の色はポジション。投手と野手を兼ねる選手は2色（例：投手・内野手）
+      const posKey = t => /捕/.test(t) ? 'c' : /内野/.test(t) ? 'if' : /外野/.test(t) ? 'of' : 'p';
+      const parts = p.pos.split(/[・／\/]/).filter(Boolean);
+      const pos = posKey(parts[0]) + (parts[1] ? ' pos2-' + posKey(parts[1]) : '');
+      const top = dr ? `${h(BOARD_NAME[dr.team.id] || dr.team.short)} ${h(dr.label)}` : h(p.category);
+      const long = p.name.replace(/\s/g, '').length >= 5;
+      return `<button type="button" class="pb-card pos-${pos} ${dr ? 'is-drafted' : 'cat-' + cat}" data-goto="${pid(p)}"${dr ? ` style="--team:${dr.team.color}"` : ''} aria-label="${h(p.name)}（${h(p.team)}）の紹介へ">
+        <span class="pb-top">${top}</span>
+        <span class="pb-name${long ? ' long' : ''}">${h(p.name)}</span>
+        <span class="pb-meta"><span>${h(p.pos)}</span><span>${h(p.team)}</span></span>
+      </button>`;
+    }).join('') : '';
+    return `<section class="pboard" aria-label="ドラフト会議${CFG.currentYear} 注目選手">
+      <div class="pb-wrap">
+        <header class="pb-head">
+          <div class="pb-title"><h1>ドラフト会議${CFG.currentYear} 注目選手<small>（${d ? d.players.length : '—'}人）</small></h1>
+            <p>1位候補を中心に紹介します。カードを押すと、その選手の紹介へ移動します。</p></div>
+        </header>
+        ${d ? `<div class="pb-grid">${cards}</div>
+        <p class="pb-legend"><span class="lg-k">カードの色</span><span class="lg hs">高校生</span><span class="lg univ">大学生</span><span class="lg corp">社会人</span></p>` : loadingBlock('prospects', '注目選手')}
+      </div>
+    </section>`;
   }
 
   function prospectCard(p) {
     const { h, ext } = UI();
     const shibou = p.shibou.status === '提出済' ? `<span class="pbadge ok">志望届 提出済（${h(p.shibou.date)}）</span>`
       : p.shibou.status === '不要' ? '<span class="pbadge">社会人（志望届不要）</span>'
-        : '<span class="pbadge warn">志望届 未提出（9/28時点）</span>';
+        : '<span class="pbadge warn">志望届 未提出</span>';
     const dr = draftedBy(p);
     const meta = [p.pos, p.hand, p.size].filter(Boolean).map(h).join('<i class="sep"></i>');
-    return `<li class="prospect">
+    return `<li class="prospect" id="${pid(p)}">
       <div class="prospect-top"><span class="pcat">${h(p.category)}</span>${shibou}</div>
       <div class="prospect-name"><h2>${h(p.name)}</h2><span class="kana">${h(p.kana)}</span></div>
       <p class="prospect-team">${h(p.team)}${p.grade ? ` ${h(p.grade)}` : ''}${p.from ? `<span class="from">（${h(p.from)}）</span>` : ''}</p>
@@ -432,6 +469,17 @@
         const target = { p: view.prospects, r: view.roster, s: view.sim }[grp];
         target[key] = b.dataset.v;
         UI().rerender();
+        return;
+      }
+      const go = e.target.closest('[data-goto]');
+      if (go) {
+        const id = go.dataset.goto;
+        let el = document.getElementById(id);
+        if (!el) { view.prospects.cat = 'all'; view.prospects.pos = 'all'; UI().rerender(); el = document.getElementById(id); }
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.classList.remove('is-flash'); void el.offsetWidth; el.classList.add('is-flash');
+        }
         return;
       }
       const vb = e.target.closest('[data-video]');
