@@ -717,3 +717,39 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .pb-legend .two { --lg: linear-gradient(135deg, #e2283c 50%, #ffe100 50%); }
 .pb-legend .two::before { clip-path: none; }
 .pb-meta { gap: 4px 12px; }
+/* カードの縦横比：参考資料（約 369×236px）と同じ 25:16 */
+.pb-card { aspect-ratio: 25 / 16; min-height: 0; padding: 12px 12px 12px; gap: 4px; }
+.pb-card::before { width: 34px; height: 34px; }
+.pb-top { font-size: 14px; }
+.pb-name { font-size: clamp(24px, 2.2vw, 36px); }
+.pb-name.long { font-size: clamp(22px, 2vw, 32px); }
+.pb-meta { font-size: 13px; }
+@media (max-width: 1279px) { .pb-name { font-size: clamp(30px, 3.6vw, 44px); } .pb-top { font-size: 16px; } .pb-meta { font-size: 15px; } .pb-card { padding: 16px 14px; } }
+@media (max-width: 900px)  { .pb-name { font-size: clamp(24px, 5vw, 38px); } .pb-top { font-size: 14px; } .pb-meta { font-size: 13px; } }
+@media (max-width: 600px)  { .pb-card { min-height: 0; padding: 8px 6px; gap: 2px; } .pb-card::before { width: 22px; height: 22px; } .pb-top { font-size: 11px; } .pb-name { font-size: 21px; } .pb-name.long { font-size: 19px; } .pb-meta { font-size: 11px; gap: 0 8px; } }
+/* 参考資料に近い大きさ：PC 4列・1100px以下 2列・600px以下 1列。文字サイズも参考資料に合わせる */
+.pb-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.pb-card { padding: 18px 16px; gap: 6px; }
+.pb-card::before { width: 44px; height: 44px; }
+.pb-top { font-size: clamp(15px, 1.4vw, 22px); }
+.pb-name { font-size: clamp(36px, 3.75vw, 60px); }
+.pb-name.long { font-size: clamp(32px, 3.4vw, 54px); }
+.pb-meta { font-size: clamp(15px, 1.4vw, 22px); gap: 4px 20px; }
+/* 最後の行が2枚のときは中央にそろえる（4列のとき） */
+.pb-card:nth-child(4n+1):nth-last-child(2) { grid-column: 2; }
+@media (max-width: 1100px) {
+  .pb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pb-card:nth-child(4n+1):nth-last-child(2) { grid-column: auto; }
+  .pb-name { font-size: clamp(34px, 6.5vw, 60px); }
+  .pb-name.long { font-size: clamp(30px, 6vw, 54px); }
+  .pb-top, .pb-meta { font-size: clamp(15px, 2.4vw, 22px); }
+}
+@media (max-width: 600px) {
+  .pb-grid { grid-template-columns: 1fr; gap: 14px; }
+  .pb-card { padding: 14px 12px; border-width: 3px; }
+  .pb-card::before { width: 36px; height: 36px; }
+  .pb-top, .pb-meta { font-size: 18px; }
+  .pb-meta { gap: 2px 20px; }
+  .pb-name { font-size: 44px; }
+  .pb-name.long { font-size: 40px; }
+}

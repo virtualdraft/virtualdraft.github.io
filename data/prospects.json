@@ -829,6 +829,96 @@
         "title": "沖縄尚学の練習に密着",
         "vertical": false
       }
+    },
+    {
+      "name": "池田 聖摩",
+      "kana": "いけだ しょうま",
+      "category": "高校生",
+      "team": "横浜高",
+      "grade": "3年",
+      "pos": "内野手",
+      "posGroup": "野手",
+      "hand": "右投左打",
+      "size": "176cm",
+      "stats": [
+        {
+          "label": "投手として最速",
+          "value": "152km/h"
+        }
+      ],
+      "highlights": [
+        "遊撃手と投手を兼ねるが、プロでは野手一本での勝負を希望",
+        "3年夏の神奈川大会で打率.500・10打点。甲子園では4強入り",
+        "U18高校日本代表"
+      ],
+      "comment": "名門・横浜の不動のショート。投手としても150キロ台を投げる強肩が最大の武器で、打球への一歩目の速さを生かした守備範囲も魅力だ。遊撃手の候補が少ない今年、評価を大きく上げる可能性を秘めた内野手。",
+      "shibou": {
+        "status": "提出済",
+        "date": "9月17日"
+      },
+      "experts": 0,
+      "sources": [
+        {
+          "label": "スポーツナビ（2026/8/7）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026080500005-spnavi?p=2"
+        },
+        {
+          "label": "ドラフト会議ホームページ",
+          "url": "https://www.draft-kaigi.jp/highschool/high-draftnews/87283/"
+        },
+        {
+          "label": "ベースボールチャンネル",
+          "url": "https://www.baseballchannel.jp/etc/286601/"
+        }
+      ],
+      "photo": {
+        "label": "週刊ベースボールONLINE",
+        "url": "https://sp.baseball.findfriends.jp/player/20080013/"
+      }
+    },
+    {
+      "name": "山里 宝",
+      "kana": "やまさと たから",
+      "category": "大学生",
+      "team": "亜細亜大",
+      "grade": "4年",
+      "pos": "内野手",
+      "posGroup": "野手",
+      "hand": "右投右打",
+      "size": "174cm・78kg",
+      "from": "神戸国際大付高",
+      "stats": [],
+      "highlights": [
+        "3年春の東都大学リーグでベストナイン",
+        "2026年春の開幕戦で鈴木泰成（青山学院大）から本塁打。東洋大戦では1試合2本塁打",
+        "2025年は春秋のリーグ戦で失策0"
+      ],
+      "comment": "小柄ながら、強肩と巧みなハンドリングで二遊間を守る堅守の内野手。手首を柔らかく使った打撃で長打も打てる「打てるショート」として、この1年で一気に評価を上げた。神戸国際大付では2年時に春夏連続で甲子園に出場している。",
+      "shibou": {
+        "status": "提出済",
+        "date": "9月4日"
+      },
+      "experts": 0,
+      "sources": [
+        {
+          "label": "スポーツナビ（2026/5/1）",
+          "url": "https://sports.yahoo.co.jp/column/detail/2026050100001-spnavi"
+        },
+        {
+          "label": "SPORTS BULL公式",
+          "url": "https://www.youtube.com/watch?v=w_ZLUrmDXhM"
+        }
+      ],
+      "photo": {
+        "label": "スポーツナビ",
+        "url": "https://baseball.yahoo.co.jp/npb/draft/players/469/yamasato_takara"
+      },
+      "video": {
+        "id": "w_ZLUrmDXhM",
+        "channel": "SPORTS BULL公式",
+        "title": "東都大学リーグ春季 開幕戦",
+        "vertical": false
+      }
     }
   ]
 }
