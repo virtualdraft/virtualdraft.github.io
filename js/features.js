@@ -12,7 +12,7 @@
   const MAX_MAIN = CFG.rosterLimit || 70;
   const POS = ['投手', '捕手', '内野手', '外野手'];
   const store = { rosters: null, prospects: null, loading: {}, error: {} };
-  const view = { prospects: { cat: 'all', pos: 'all' }, roster: { status: 'all', pos: 'all', sort: 'no' }, sim: { pos: 'all', sort: 'no' }, depth: { sim: 'off' } };
+  const view = { prospects: { cat: 'all', pos: 'all' }, roster: { status: 'all', pos: 'all', sort: 'no' }, sim: { pos: 'all', sort: 'no' }, depth: { sim: 'off' }, age: { pos: 'all', hand: 'all' } };
 
   // ---------- データ読み込み ----------
   async function loadJSON(key, url) {
@@ -230,30 +230,60 @@
     </div>`;
   }
 
-  function ageChart(players) {
+  // 年齢分布（ポジションで絞り込み可。横軸の年齢範囲は球団全体で固定して比較しやすくする）
+  const POS_SHORT = { 投手: '投', 捕手: '捕', 内野手: '内', 外野手: '外' };
+  function ageChart(allPlayers) {
     const { h } = UI();
-    const ages = players.map(p => p.age).filter(a => a != null);
-    if (!ages.length) return '';
-    const lo = Math.min(...ages), hi = Math.max(...ages);
+    const pos = view.age.pos;
+    // 投手は投げ手（右投・左投）、野手は打席（右打ち・左打ち・両打ち）で絞り込み可
+    const isP = pos === '投手';
+    const hand = pos === 'all' ? 'all' : view.age.hand;
+    const sideOf = p => isP ? p.throws : p.bats;
+    const inPos = pos === 'all' ? allPlayers : allPlayers.filter(p => p.pos === pos);
+    const players = inPos.filter(p => hand === 'all' || sideOf(p) === hand);
+    // NPBのデータでは両打ちは「左右」と表記される。両打ちは該当者がいるときだけ選択肢に出す
+    const sides = isP ? [['右', '右投手'], ['左', '左投手']]
+      : [['右', '右打ち'], ['左', '左打ち'], ['左右', '両打ち']].filter(([k]) => k !== '左右' || inPos.some(p => p.bats === '左右'));
+    const allAges = allPlayers.map(p => p.age).filter(a => a != null);
+    if (!allAges.length) return '';
+    const lo = Math.min(...allAges), hi = Math.max(...allAges);
+    const byAge = a => players.filter(p => p.age === a).sort((x, y) => (x.status === y.status ? 0 : x.status === '支配下' ? -1 : 1));
     const cols = [];
     for (let a = lo; a <= hi; a++) {
-      const main = players.filter(p => p.age === a && p.status === '支配下').length;
-      const dev = players.filter(p => p.age === a && p.status === '育成').length;
-      cols.push({ a, main, dev });
+      const list = byAge(a);
+      cols.push({ a, list, main: list.filter(p => p.status === '支配下'), dev: list.filter(p => p.status === '育成') });
     }
-    const max = Math.max(...cols.map(c => c.main + c.dev));
+    const max = Math.max(1, ...cols.map(c => c.list.length));
     const top = Math.max(2, Math.ceil(max / 2) * 2);
     const grid = [top, top / 2].map(v => `<div class="gl" style="bottom:${v / top * 100}%"><span>${v}</span></div>`).join('');
-    return `<figure class="age-chart" aria-label="年齢分布（${baseLabel}）">
+    // 名前の後ろの印：全ポジションならポジション、投手なら投げ手（左投手のみ「左」）
+    const mark = p => pos === 'all' ? (POS_SHORT[p.pos] || '') + (p.pos === '投手' && p.throws === '左' ? '・左' : '')
+      : hand !== 'all' ? '' : isP ? (p.throws === '左' ? '左' : '右') : `${p.bats === '左右' ? '両' : p.bats}打`;
+    const nm = p => p.name + (mark(p) ? `（${mark(p)}）` : '');
+    const label = pos === 'all' ? '全選手' : hand === 'all' ? pos : `${pos}（${(sides.find(x => x[0] === hand) || ['', hand])[1]}）`;
+    const avgAge = players.length ? (players.reduce((t, p) => t + (p.age || 0), 0) / players.filter(p => p.age != null).length).toFixed(1) : '—';
+    return `<div class="filters age-filters">${chips('g-pos', pos, [['all', '全ポジション'], ...POS.map(p => [p, p])])}</div>
+      ${pos !== 'all' ? `<div class="filters age-filters age-sub">${chips('g-hand', hand, [['all', isP ? '右・左すべて' : '右・左・両すべて'], ...sides])}</div>` : ''}
+      <p class="age-meta">${h(label)} ${players.length}名・平均 ${avgAge}歳${pos !== 'all' && hand === 'all' ? `（${sides.map(([k, t]) => `${t} ${inPos.filter(p => sideOf(p) === k).length}名`).join('・')}）` : ''}</p>
+      <figure class="age-chart" aria-label="年齢分布（${baseLabel}）">
       <div class="legend"><span><i class="sw sw-main"></i>支配下</span><span><i class="sw sw-dev"></i>育成</span></div>
       <div class="plot">${grid}<div class="bars">${cols.map(c => {
-        const tip = `${c.a}歳：支配下 ${c.main}名・育成 ${c.dev}名`;
+        const tip = c.list.length
+          ? `${c.a}歳（${c.list.length}名）` + (c.main.length ? `\n支配下：${c.main.map(nm).join('、')}` : '') + (c.dev.length ? `\n育成：${c.dev.map(nm).join('、')}` : '')
+          : `${c.a}歳：該当なし`;
         return `<div class="col" data-tip="${h(tip)}" aria-label="${h(tip)}" tabindex="0">
-          <div class="stack">${c.dev ? `<i class="seg dev" style="height:${c.dev / top * 100}%"></i>` : ''}${c.main ? `<i class="seg main" style="height:${c.main / top * 100}%"></i>` : ''}</div>
+          <div class="stack">${c.dev.length ? `<i class="seg dev" style="height:${c.dev.length / top * 100}%"></i>` : ''}${c.main.length ? `<i class="seg main" style="height:${c.main.length / top * 100}%"></i>` : ''}</div>
           <span class="xl">${c.a % 2 === 0 || cols.length < 16 ? c.a : ''}</span></div>`;
       }).join('')}</div></div>
-      <figcaption class="muted small">年齢（${baseLabel}）。棒にカーソルを合わせると人数を表示します。</figcaption>
-    </figure>`;
+      <figcaption class="muted small">年齢（${baseLabel}）。棒にカーソルを合わせると選手名を表示します。</figcaption>
+    </figure>
+    <div class="age-names" aria-label="年齢別の選手">
+      <h3 class="sub-title">年齢別の選手</h3>
+      ${cols.filter(c => c.list.length).map(c => `<div class="an-row">
+        <span class="an-age">${c.a}<small>歳</small></span>
+        <span class="an-list">${c.list.map(p => `<span class="an-p ${p.status === '育成' ? 'dev' : 'main'}">${h(p.name)}${mark(p) ? `<i class="${/左|両/.test(mark(p)) ? 'lh' : ''}">${h(mark(p))}</i>` : ''}</span>`).join('')}</span>
+      </div>`).join('') || '<p class="muted">該当する選手はいません。</p>'}
+    </div>`;
   }
 
   function posBlock(s) {
@@ -594,8 +624,9 @@
       const b = e.target.closest('[data-f]');
       if (b) {
         const [grp, key] = b.dataset.f.split('-');
-        const target = { p: view.prospects, r: view.roster, s: view.sim, d: view.depth }[grp];
+        const target = { p: view.prospects, r: view.roster, s: view.sim, d: view.depth, g: view.age }[grp];
         target[key] = b.dataset.v;
+        if (grp === 'g' && key === 'pos') view.age.hand = 'all';
         UI().rerender();
         return;
       }
