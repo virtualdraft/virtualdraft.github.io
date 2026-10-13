@@ -144,6 +144,11 @@ window.DRAFT_CONFIG = {
       org: '全日本大学野球連盟',
       url: 'https://www.jubf.net/system/prog/procandidate.php?kind=all&year=2026',
     },
+    {
+      label: '大学生（準硬式）：2026年プロ野球志望届提出者一覧',
+      org: '全日本大学準硬式野球連盟',
+      url: 'https://junko.or.jp/pro-aspiring2026',
+    },
   ],
 
   // 参加12球団（表示順・表記・色）。aliases はシート上の表記ゆれ吸収用。
