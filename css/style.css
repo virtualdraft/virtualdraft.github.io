@@ -314,7 +314,10 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .singles { margin-top: 8px; }
 
 /* ===== Board table (PC) ===== */
-.board-sp { display: none; }
+/* 指名選手一覧（PCでは表の下に、細い画面では表の代わりに表示） */
+.board-sp { margin-top: 48px; }
+.board-sp .tl-items { grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr)); }
+.only-sp { display: none; }
 .hscroll { overflow: auto; border-radius: var(--r-tile); background: var(--band); max-height: 80vh; }
 .board { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1180px; table-layout: fixed; font-size: 13px; }
 .board th, .board td { border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); padding: 9px 10px; vertical-align: top; text-align: left; }
@@ -436,7 +439,9 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 /* ===== Responsive ===== */
 @media (max-width: 1023px) {
   .board-pc, .board-pc-title { display: none; }
-  .board-sp { display: block; }
+  .board-sp { margin-top: 0; }
+  .only-pc { display: none; }
+  .only-sp { display: inline; }
   .team-links { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .team-cols { grid-template-columns: 1fr; }
   .lot { grid-template-columns: 1fr; }

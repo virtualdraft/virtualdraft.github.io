@@ -326,7 +326,7 @@
       blocks.push(`<li class="tl-block tl-dev"><h3 class="tl-rank"><span>育成</span>${r}位</h3><ul class="tl-items">${items.map(({ t, x }) =>
         `<li><a href="#/${y}/${t.id}">${teamChip(t)}</a>${player(x.player)}</li>`).join('')}</ul></li>`);
     }
-    return `<div class="board-sp"><h2 class="section-title">指名タイムライン</h2>${blocks.length ? `<ol class="timeline">${blocks.join('')}</ol>` : '<p class="muted">まだ指名はありません。</p>'}</div>`;
+    return `<div class="board-sp"><h2 class="section-title"><span class="only-pc">指名選手一覧</span><span class="only-sp">指名タイムライン</span></h2>${blocks.length ? `<ol class="timeline">${blocks.join('')}</ol>` : '<p class="muted">まだ指名はありません。</p>'}</div>`;
   }
 
   function teamLinks(m) {
