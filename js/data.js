@@ -196,12 +196,16 @@
     }
     if (headerIdx < 0) throw new Error('球団名の見出し行が見つかりません');
 
+    // 凡例：見出し行より上の凡例に加え、集計欄（P13〜P16 の「支配下指名選手ポジション別指名数」など）の
+    // 「投手/捕手/内野手/外野手」セルの色も読む。球団の列（指名セル）は対象外
     const posByColor = {};
     if (colors) {
-      for (let r = 0; r < headerIdx; r++) {
+      const pickCols = new Set(teamCols.map(x => x.ci));
+      for (let r = 0; r < rows.length; r++) {
         rows[r].forEach((c, ci) => {
+          if (r > headerIdx && pickCols.has(ci)) return;
           const g = norm(c), col = colors[r] && colors[r][ci];
-          if (POSITIONS.includes(g) && col && !/^#?f{6}$|^white$/i.test(col)) posByColor[col] = g;
+          if (POSITIONS.includes(g) && col && !/^#?f{6}$|^white$/i.test(col) && !posByColor[col]) posByColor[col] = g;
         });
       }
     }
