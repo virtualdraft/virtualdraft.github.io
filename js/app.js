@@ -12,7 +12,7 @@
   const CFG = window.DRAFT_CONFIG;
   const YEARS = Object.keys(CFG.years).map(Number).sort((a, b) => b - a);
   const app = document.getElementById('app');
-  const state = { results: {}, timer: null, loadingYear: null };
+  const state = { results: {}, timer: null, loadingYear: null, profiles: null, viewYear: null };
 
   // ---------- 開催状態 ----------
   const phaseOverride = new URLSearchParams(location.search).get('phase');
@@ -40,10 +40,28 @@
     return ext(CFG.sheetUrl, label, cls);
   }
 
+  // ---------- 指名選手のプロフィール（候補DBの公開分。当年のみ） ----------
+  const VARIANTS = { '髙': '高', '﨑': '崎', '德': '徳', '濵': '浜', '邊': '辺', '邉': '辺', '俠': '侠', '齋': '斎', '齊': '斉', '槇': '槙', '𠮷': '吉', '栁': '柳', '冨': '富', '曻': '昇', '瀨': '瀬', '惠': '恵', '黑': '黒' };
+  const nameKey = s => [...String(s || '').normalize('NFKC').replace(/[\s*+\uFE00-\uFE0F]|[\u{E0100}-\u{E01EF}]/gu, '')].map(c => VARIANTS[c] || c).join('');
+  function profileOf(p) {
+    if (!p || !state.profiles || state.viewYear !== CFG.currentYear) return null;
+    const list = state.profiles[nameKey(p.name)];
+    if (!list || !list.length) return null;
+    if (list.length === 1) return list[0];
+    // 同姓同名の候補が複数いる場合は、指名データの所属で見分ける（見分けられなければ表示しない）
+    const sk = nameKey(p.school).slice(0, 2);
+    return (sk && list.find(x => nameKey(x.team).includes(sk))) || null;
+  }
+  const profPos = pr => pr.pos ? pr.pos + (pr.secondPos ? `/${pr.secondPos}` : '') : '';
+  const profLine = pr => [pr.category, pr.hand, pr.age != null ? `${pr.age}歳` : '',
+    pr.height && pr.weight ? `${pr.height}cm/${pr.weight}kg` : pr.height ? `${pr.height}cm` : ''].filter(Boolean).join('・');
+
   function player(p, opts = {}) {
     if (!p) return '<span class="empty">—</span>';
-    const meta = [p.pos, p.school].filter(Boolean).join('・');
-    return `<span class="pl${opts.compact ? ' pl-compact' : ''}"><span class="pl-name">${h(p.name)}</span>${meta ? `<span class="pl-meta">${h(meta)}</span>` : ''}</span>`;
+    const pr = profileOf(p);
+    const meta = pr ? [profPos(pr) || p.pos, pr.team].filter(Boolean).join('・') : [p.pos, p.school].filter(Boolean).join('・');
+    const line = pr && !opts.compact ? profLine(pr) : '';
+    return `<span class="pl${opts.compact ? ' pl-compact' : ''}"><span class="pl-name">${h(p.name)}</span>${meta ? `<span class="pl-meta">${h(meta)}</span>` : ''}${line ? `<span class="pl-prof">${h(line)}</span>` : ''}</span>`;
   }
 
   function teamChip(t, opts = {}) {
@@ -371,8 +389,11 @@
 
   function pickList(list, kind, label) {
     if (!list.length) return `<p class="muted">${label}はありません。</p>`;
-    return `<ol class="picks picks-${kind}">${list.map(x => `<li><span class="pick-rank">${kind === 'dev' ? '育成' : ''}${x.rank}位</span>
-      <span class="pick-name">${h(x.player.name)}</span><span class="pick-pos">${h(x.player.pos || '—')}</span><span class="pick-school">${h(x.player.school || '')}</span></li>`).join('')}</ol>`;
+    return `<ol class="picks picks-${kind}">${list.map(x => {
+      const pr = profileOf(x.player), line = pr ? profLine(pr) : '';
+      return `<li><span class="pick-rank">${kind === 'dev' ? '育成' : ''}${x.rank}位</span>
+      <span class="pick-name">${h(x.player.name)}</span><span class="pick-pos">${h((pr && profPos(pr)) || x.player.pos || '—')}</span><span class="pick-school">${h((pr && pr.team) || x.player.school || '')}</span>${line ? `<span class="pick-prof">${h(line)}</span>` : ''}</li>`;
+    }).join('')}</ol>`;
   }
 
   function viewTeam(year, id) {
@@ -455,6 +476,7 @@
 
   function render(opts = {}) {
     const route = parseRoute();
+    state.viewYear = route.year || null;
     const scrolls = {};
     app.querySelectorAll('[data-scroll]').forEach(el => (scrolls[el.dataset.scroll] = el.scrollLeft));
     let html, title;
@@ -484,6 +506,15 @@
   // ---------- データ取得と自動更新 ----------
   async function refresh(year) {
     state.loadingYear = year;
+    // プロフィールは指名データの表示を待たせないよう別に取得し、届いたら描き直す
+    if (year === CFG.currentYear) {
+      window.DraftData.loadProfiles().then(prof => {
+        if (!prof) return;
+        const changed = JSON.stringify(prof.players) !== JSON.stringify(state.profiles);
+        state.profiles = prof.players;
+        if (changed && (parseRoute().year || CFG.currentYear) === year) render();
+      });
+    }
     const res = await window.DraftData.load(year);
     state.results[year] = res;
     const route = parseRoute();

@@ -40,6 +40,13 @@ window.DRAFT_CONFIG = {
     2019: { gid: '1133424164' },
   },
 
+  /*
+   * 指名選手のプロフィール（当年のみ）
+   * 候補DBスプレッドシートの Apps Script を「ウェブアプリ」としてデプロイした URL（…/exec）。
+   * 指名・明言・入札で名前が出た選手だけの 区分・所属・ポジション・投打・年齢・身長・体重 が返ります。空欄なら表示しません。
+   */
+  profileApiUrl: 'https://script.google.com/macros/s/AKfycbwQ2aKRwN-o9BpLzVQ_fVo0Xp6qhiEoWn2zK4vhUyzFwkJvFg71zl3beE-uWdPK0w1-/exec',
+
   // NPB所属選手・シミュレーション
   rosterLimit: 70,                 // 支配下選手の上限
   ageBaseDate: '2027-04-01',       // 年齢を数える基準日（来季開幕前）

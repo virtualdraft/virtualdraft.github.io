@@ -214,6 +214,7 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .pl-meta { font-size: 12px; color: var(--muted); }
 .pl-compact .pl-name { font-size: 14px; }
 .pl-compact .pl-meta { font-size: 11px; }
+.pl-prof { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .empty { color: var(--muted); }
 
 /* ===== Status ===== */
@@ -392,6 +393,7 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .pick-name { font-weight: 700; font-size: 17px; }
 .pick-pos { font-size: 14px; color: var(--ink-2); }
 .pick-school { font-size: 14px; color: var(--muted); }
+.pick-prof { grid-column: 2 / -1; margin-top: -6px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .bid-list { list-style: none; margin: 0; padding: 0; }
 .bid-list li { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .bid-list li:last-child { border-bottom: 0; }
@@ -457,6 +459,7 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
   .pick-rank { grid-row: span 2; }
   .pick-name { grid-column: 2 / 4; }
   .pick-pos, .pick-school { font-size: 13px; }
+  .pick-prof { margin-top: 2px; font-size: 12px; }
   .team-hero { padding: 22px; }
   .team-hero-kpis { width: 100%; grid-template-columns: 1fr 1fr; }
   .tl-items li { grid-template-columns: 88px 1fr auto; }

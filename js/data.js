@@ -454,5 +454,20 @@
     try { return { model: buildModel(year, c.data), fetchedAt: c.fetchedAt, source: 'cache' }; } catch (e) { return null; }
   }
 
-  window.DraftData = { load, peek, buildModel, parseCSV, parseSheetHTML, parsePlayer, sourceUrl, POSITIONS };
+  /**
+   * 指名された選手のプロフィール（候補DBのうち、運営スプレッドシートに名前がある選手だけを返す公開用 JSON）。
+   * 取得できなかった場合は null（表示は指名データのみで続行）。
+   */
+  async function loadProfiles() {
+    if (!CFG.profileApiUrl) return null;
+    try {
+      const sep = CFG.profileApiUrl.includes('?') ? '&' : '?';
+      const res = await fetch(CFG.profileApiUrl + sep + '_=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data && data.players ? data : null;
+    } catch (e) { return null; }
+  }
+
+  window.DraftData = { load, peek, loadProfiles, buildModel, parseCSV, parseSheetHTML, parsePlayer, sourceUrl, POSITIONS };
 })();
