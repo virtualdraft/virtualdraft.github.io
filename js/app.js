@@ -2,7 +2,7 @@
  * 画面描画・ルーティング・自動更新
  * URL（ハッシュ）:
  *   #/                 トップ
- *   #/2026             2026年ドラフトボード（各年度に直接アクセス可）
+ *   #/2026             2026年指名状況（各年度に直接アクセス可）
  *   #/2026/teams       2026年 球団一覧
  *   #/2026/giants      2026年 球団別ページ
  *   #/archive          年度別アーカイブ
@@ -160,7 +160,7 @@
         { label: '育成 指名', value: m.totals.dev, unit: '名', cls: 'sb-dev' },
         { label: '1位 確定', value: decided, unit: `/${m.teams.length}` },
       ], `<span>${ph === 'live' ? '<i class="live-dot"></i>会議中' : '会議終了'}</span><span>最終更新 ${fmtTime(res.fetchedAt)}</span>`)}
-      <div class="live-cta"><a class="btn btn-lg" href="#/${y}">${ph === 'live' ? 'ライブ会議室（ドラフトボード）に入る' : 'ドラフト結果を見る'}</a>${CFG.sheetUrl ? ext(CFG.sheetUrl, '運営スプレッドシートを開く', 'btn ghost btn-lg') : ''}</div>
+      <div class="live-cta"><a class="btn btn-lg" href="#/${y}">${ph === 'live' ? 'ライブ会議室（指名状況）に入る' : 'ドラフト結果を見る'}</a>${CFG.sheetUrl ? ext(CFG.sheetUrl, '運営スプレッドシートを開く', 'btn ghost btn-lg') : ''}</div>
       ${res.error ? `<p class="live-warn">※ 最新データの取得に失敗しています。前回取得分を表示中です。${sheetLink('運営シートで確認', 'inline-link')}</p>` : ''}`) : '';
 
     const teamsList = (m ? m.teams : CFG.teams).map(t => `
@@ -178,7 +178,7 @@
         <p class="tag">開催日 ${h(ev.dateLabel)} ${h(ev.timeLabel)}</p>
         <p class="sub">会場 ${h(ev.venue)}</p>
         <div class="ctas">
-          <a class="btn" href="#/${y}">ドラフトボード</a>
+          <a class="btn" href="#/${y}">指名状況</a>
           ${ext(ev.mapUrl, '会場地図（Google マップで開く）', 'btn ghost')}
         </div>
       </header>
@@ -191,7 +191,7 @@
         </div>`)}
       ${band(false, 'links', '', 'リンク', '', `
         <div class="quick">
-          <a class="quick-card" href="#/${y}"><span class="quick-t">ドラフトボード</span><span class="quick-d">1位競合・本指名・育成指名を一覧で</span><span class="quick-go">ドラフトボードを開く</span></a>
+          <a class="quick-card" href="#/${y}"><span class="quick-t">指名状況</span><span class="quick-d">1位競合・本指名・育成指名を一覧で</span><span class="quick-go">指名状況を開く</span></a>
           ${CFG.sheetUrl ? ext(CFG.sheetUrl, '<span class="quick-t">運営スプレッドシート</span><span class="quick-d">指名入力・集計の正本（閲覧）</span><span class="quick-go">スプレッドシートを開く</span>', 'quick-card') : '<span class="quick-card is-disabled"><span class="quick-t">運営スプレッドシート</span><span class="quick-d">リンク未設定</span></span>'}
           <a class="quick-card" href="#/archive"><span class="quick-t">過去の結果</span><span class="quick-d">2019〜${y - 1}年のアーカイブ</span><span class="quick-go">アーカイブを開く</span></a>
           <a class="quick-card" href="#/prospects"><span class="quick-t">注目選手</span><span class="quick-d">ドラフト会議${y}の1位候補を中心に紹介</span><span class="quick-go">注目選手を見る</span></a>
@@ -240,7 +240,7 @@
     </div>`;
   }
 
-  // ---------- ドラフトボード ----------
+  // ---------- 指名状況 ----------
   function lotteryPanel(m) {
     if (!m.rounds.length && !m.hasDeclared) return '';
     const declared = m.hasDeclared ? `
@@ -332,7 +332,7 @@
 
   function viewBoard(year) {
     const res = state.results[year], m = res && res.model, ph = phase(year);
-    const title = `${year}年 ドラフトボード`;
+    const title = `${year}年 指名状況`;
     let body;
     if (!res) body = statusBar(null, year);
     else if (!m) body = statusBar(res, year) + noData(res);
@@ -367,7 +367,7 @@
   function viewTeams(year) {
     const res = state.results[year], m = res && res.model;
     return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow"><a href="#/${year}">${year}年 ドラフトボード</a></p><h1 class="page-title">${year}年 球団別結果</h1></div>${yearTabs(year, '/teams')}</div>
+      <div class="page-head"><div><p class="eyebrow"><a href="#/${year}">${year}年 指名状況</a></p><h1 class="page-title">${year}年 球団別結果</h1></div>${yearTabs(year, '/teams')}</div>
       ${statusBar(res, year)}
       ${m ? `<ul class="team-grid">${m.teams.map(t => `<li><a class="team-card" href="#/${year}/${t.id}" style="--team:${t.color}">
         <span class="team-card-name">${h(t.name)}</span><span class="team-card-owner">担当：${h(t.owner || '—')}</span>
@@ -436,7 +436,7 @@
         </div>`;
     }
     return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow"><a href="#/${year}">${year}年 ドラフトボード</a> ／ 球団別</p><h1 class="page-title">${h(base ? base.name : '球団')}</h1></div>${yearTabs(year, '/' + id)}</div>
+      <div class="page-head"><div><p class="eyebrow"><a href="#/${year}">${year}年 指名状況</a> ／ 球団別</p><h1 class="page-title">${h(base ? base.name : '球団')}</h1></div>${yearTabs(year, '/' + id)}</div>
       ${switcher}
       ${body}
     </div>`;
@@ -445,14 +445,14 @@
   // ---------- アーカイブ ----------
   function viewArchive() {
     return `<div class="container">
-      <div class="page-head"><div><h1 class="page-title">年度別アーカイブ</h1><p class="muted">2019年からの仮想ドラフト結果。各年度のドラフトボードと球団別結果を閲覧できます。</p></div></div>
+      <div class="page-head"><div><h1 class="page-title">年度別アーカイブ</h1><p class="muted">2019年からの仮想ドラフト結果。各年度の指名状況と球団別結果を閲覧できます。</p></div></div>
       <ul class="archive-grid">${YEARS.map(y => {
         const r = state.results[y] || window.DraftData.peek(y);
         const m = r && r.model;
         return `<li class="archive-card${y === CFG.currentYear ? ' is-current' : ''}">
           <span class="archive-year">${y}</span>
           <span class="archive-meta">${y === CFG.currentYear ? '今年の会議' : '結果アーカイブ'}${m ? `・支配下 ${m.totals.main} / 育成 ${m.totals.dev}` : ''}</span>
-          <span class="archive-actions"><a class="btn btn-primary" href="#/${y}">ドラフトボード</a><a class="btn btn-ghost" href="#/${y}/teams">球団別結果</a></span>
+          <span class="archive-actions"><a class="btn btn-primary" href="#/${y}">指名状況</a><a class="btn btn-ghost" href="#/${y}/teams">球団別結果</a></span>
         </li>`;
       }).join('')}</ul>
     </div>`;
@@ -484,7 +484,7 @@
       case 'archive': html = viewArchive(); title = '年度別アーカイブ'; break;
       case 'rules': html = viewRules(); title = 'ルール・選択手順'; break;
       case 'prospects': case 'npb': case 'npbTeam': case 'sim': case 'depth': html = window.DraftFeatures.view(route); title = route.title; break;
-      case 'board': html = viewBoard(route.year); title = `${route.year}年 ドラフトボード`; break;
+      case 'board': html = viewBoard(route.year); title = `${route.year}年 指名状況`; break;
       case 'teams': html = viewTeams(route.year); title = `${route.year}年 球団別結果`; break;
       case 'team': html = viewTeam(route.year, route.id); title = `${teamById(route.id).short}（${route.year}年）`; break;
       default: html = viewHome(); title = '';
