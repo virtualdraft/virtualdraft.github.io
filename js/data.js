@@ -177,8 +177,13 @@
       const d = Math.hypot(rgb[0] - ref[0], rgb[1] - ref[1], rgb[2] - ref[2]);
       if (d < bestDist) { bestDist = d; best = pos; }
     }
-    return bestDist <= COLOR_TOLERANCE ? best : '';
+    if (bestDist <= COLOR_TOLERANCE) return best;
+    // 凡例と違う色でも、候補リスト（候補DBの元シート）で使っている色なら、そのポジションとみなす
+    return CANDIDATE_COLORS[String(color).trim().toLowerCase()] || '';
   }
+  const CANDIDATE_COLORS = {
+    '#ea9999': '投手', '#e06666': '投手', '#ffff00': '内野手', '#00ff00': '外野手', '#6d9eeb': '捕手', '#6fa8dc': '捕手',
+  };
 
   // ---------- 表形式（球団が列、項目が行） ----------
   // colors: セル背景色（HTML取得時のみ）。見出し行より上にある「投手/捕手/内野手/外野手」の凡例セルの色でポジションを判定する。

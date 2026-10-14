@@ -48,9 +48,13 @@
     const list = state.profiles[nameKey(p.name)];
     if (!list || !list.length) return null;
     if (list.length === 1) return list[0];
-    // 同姓同名の候補が複数いる場合は、指名データの所属で見分ける（見分けられなければ表示しない）
-    const sk = nameKey(p.school).slice(0, 2);
-    return (sk && list.find(x => nameKey(x.team).includes(sk))) || null;
+    // 同姓同名の候補が複数いる場合は、運営シートのセル色のポジションで見分ける（1人に決まらなければ表示しない）
+    const pos = p.posGroup || p.pos;
+    if (!pos) return null;
+    const same = list.filter(x => x.pos === pos);
+    if (same.length) return same.length === 1 ? same[0] : null;
+    const second = list.filter(x => x.secondPos === pos);
+    return second.length === 1 ? second[0] : null;
   }
   const profPos = pr => pr.pos ? pr.pos + (pr.secondPos ? `/${pr.secondPos}` : '') : '';
   const profLine = pr => [pr.category, pr.hand, pr.age != null ? `${pr.age}歳` : '',
