@@ -308,25 +308,78 @@
       <p class="muted small">人数は「支配下 / 育成」。球団名から球団別ページへ移動できます。</p></div>`;
   }
 
+  // ---------- 指名選手一覧の絞り込み（カテゴリ・ポジション・投打。グループ内は「いずれか」、グループ間は「すべて」） ----------
+  const TLF_KEY = 'draft-tl-filter';
+  const TLF_CAT_ORDER = ['高校生', '大学生', '社会人', '独立'];
+  const TLF_POS = ['投手', '捕手', '内野手', '外野手'];
+  const TLF_HAND = ['右投', '左投', '右打', '左打', '両打'];
+  let tlFilter = { cat: [], pos: [], hand: [] };
+  try { tlFilter = { ...tlFilter, ...JSON.parse(localStorage.getItem(TLF_KEY) || '{}') }; } catch (e) { /* 保存できない環境では毎回リセット */ }
+  const tlfActive = () => tlFilter.cat.length + tlFilter.pos.length + tlFilter.hand.length > 0;
+
+  // 選手の絞り込み用の属性（プロフィールが無い選手は、運営シートのセル色のポジションだけ）
+  function pickAttrs(p) {
+    const pr = profileOf(p);
+    const pos = pr ? [pr.pos, pr.secondPos].filter(Boolean) : [p.posGroup || p.pos].filter(Boolean);
+    const hand = pr && pr.hand ? pr.hand : '';
+    return { cat: pr ? pr.category : '', pos, throw: (hand[0] || (pr && pr.throws) || ''), bat: hand.length >= 4 ? hand[2] : '' };
+  }
+  function pickMatches(a) {
+    const f = tlFilter;
+    if (f.cat.length && !f.cat.includes(a.cat)) return false;
+    if (f.pos.length && !a.pos.some(x => f.pos.includes(x))) return false;
+    if (f.hand.length) {
+      // 投手なら投げ手（右投/左投）、野手なら打席（右打/左打/両打）で判定。兼任はどちらかに当てはまれば表示
+      const pitcher = a.pos.includes('投手'), fielder = a.pos.some(x => x !== '投手');
+      const ok = f.hand.some(v => v.endsWith('投') ? pitcher && a.throw === v[0] : fielder && a.bat === v[0]);
+      if (!ok) return false;
+    }
+    return true;
+  }
+
+  function tlFilterBar(all) {
+    const cats = [...new Set(all.map(a => a.cat).filter(Boolean))]
+      .sort((x, y) => (TLF_CAT_ORDER.indexOf(x) + 1 || 99) - (TLF_CAT_ORDER.indexOf(y) + 1 || 99));
+    const hands = TLF_HAND.filter(v => v !== '両打' || all.some(a => a.bat === '両'));
+    const group = (key, label, values) => `<div class="tlf-group" role="group" aria-label="${label}"><span class="tlf-label">${label}</span>${values.map(v =>
+      `<button type="button" class="tlf-chip" data-tlf="${key}" data-v="${h(v)}" aria-pressed="${tlFilter[key].includes(v)}">${h(v)}</button>`).join('')}</div>`;
+    return `<div class="tl-filter">
+      ${cats.length ? group('cat', 'カテゴリ', cats) : ''}
+      ${group('pos', 'ポジション', TLF_POS)}
+      ${group('hand', '投打', hands)}
+      <p class="tlf-note">投手は投げ手（右投・左投）、野手は打席（右打・左打・両打）で絞り込みます。兼任ポジションの選手はどちらのポジションにも表示します。</p>
+    </div>`;
+  }
+
   function boardTimeline(m) {
     const y = m.year, blocks = [];
+    const withProfiles = y === CFG.currentYear && !!state.profiles;
+    const active = withProfiles && tlfActive();
+    const all = [];
+    const keep = p => { const a = pickAttrs(p); all.push(a); return !active || pickMatches(a); };
+    let shown = 0;
     for (let r = 1; r <= m.maxMain; r++) {
-      const items = m.teams.map(t => ({ t, x: t.main.find(x => x.rank === r) })).filter(o => o.x);
+      const items = m.teams.map(t => ({ t, x: t.main.find(x => x.rank === r) })).filter(o => o.x && keep(o.x.player));
       if (!items.length) continue;
+      shown += items.length;
       blocks.push(`<li class="tl-block tl-main"><h3 class="tl-rank"><span>本指名</span>${r}位</h3><ul class="tl-items">${items.map(({ t, x }) =>
         `<li><a href="#/${y}/${t.id}">${teamChip(t)}</a>${player(x.player)}${r === 1 && t.firstContested ? '<span class="tag tag-hot">競合</span>' : ''}</li>`).join('')}</ul></li>`);
     }
     const pendingTeams = m.teams.filter(t => !t.first && t.bids.length);
-    if (pendingTeams.length) {
+    if (pendingTeams.length && !active) {
       blocks.splice(1, 0, `<li class="tl-block tl-pending"><h3 class="tl-rank"><span>1位</span>未確定</h3><ul class="tl-items">${pendingTeams.map(t => `<li>${teamChip(t)}<span class="muted">抽選・再入札待ち</span></li>`).join('')}</ul></li>`);
     }
     for (let r = 1; r <= m.maxDev; r++) {
-      const items = m.teams.map(t => ({ t, x: t.dev.find(x => x.rank === r) })).filter(o => o.x);
+      const items = m.teams.map(t => ({ t, x: t.dev.find(x => x.rank === r) })).filter(o => o.x && keep(o.x.player));
       if (!items.length) continue;
+      shown += items.length;
       blocks.push(`<li class="tl-block tl-dev"><h3 class="tl-rank"><span>育成</span>${r}位</h3><ul class="tl-items">${items.map(({ t, x }) =>
         `<li><a href="#/${y}/${t.id}">${teamChip(t)}</a>${player(x.player)}</li>`).join('')}</ul></li>`);
     }
-    return `<div class="board-sp"><h2 class="section-title"><span class="only-pc">指名選手一覧</span><span class="only-sp">指名タイムライン</span></h2>${blocks.length ? `<ol class="timeline">${blocks.join('')}</ol>` : '<p class="muted">まだ指名はありません。</p>'}</div>`;
+    const total = all.length;
+    const bar = withProfiles && total ? `${tlFilterBar(all)}<p class="tlf-count" aria-live="polite"><span>${active ? `${total}名中 <b>${shown}</b>名を表示` : `${total}名`}</span>${active ? '<button type="button" class="linkish" data-tlf-clear>絞り込みを解除</button>' : ''}</p>` : '';
+    const empty = active ? '<p class="muted">条件に当てはまる選手はいません。</p>' : '<p class="muted">まだ指名はありません。</p>';
+    return `<div class="board-sp"><h2 class="section-title"><span class="only-pc">指名選手一覧</span><span class="only-sp">指名タイムライン</span></h2>${bar}${blocks.length ? `<ol class="timeline">${blocks.join('')}</ol>` : empty}</div>`;
   }
 
   function teamLinks(m) {
@@ -553,6 +606,16 @@
     else clearTimeout(state.timer);
   });
   app.addEventListener('click', e => {
+    const chip = e.target.closest('[data-tlf]');
+    if (chip || e.target.closest('[data-tlf-clear]')) {
+      if (chip) {
+        const list = tlFilter[chip.dataset.tlf], v = chip.dataset.v, i = list.indexOf(v);
+        if (i >= 0) list.splice(i, 1); else list.push(v);
+      } else tlFilter = { cat: [], pos: [], hand: [] };
+      try { localStorage.setItem(TLF_KEY, JSON.stringify(tlFilter)); } catch (err) { /* 保存できなくても絞り込みは動く */ }
+      render();
+      return;
+    }
     if (e.target.closest('[data-action="refresh"]')) {
       const y = parseRoute().year || CFG.currentYear;
       refresh(y).then(schedule);
