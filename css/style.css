@@ -117,7 +117,8 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .menu-col { display: grid; gap: 6px; align-content: start; }
 .menu-group { padding: 8px 0; border-bottom: 1px solid var(--line); }
 /* スマホで1列にしたときの並び順（PCは列ごとにまとめて表示） */
-.mg-top { order: 1; } .mg-board { order: 2; } .mg-prospects { order: 3; } .mg-npb { order: 4; } .mg-refs { order: 5; } .mg-archive { order: 6; } .mg-rules { order: 7; }
+.mg-info { order: 1; }
+.mg-top { order: 0; } .mg-board { order: 2; } .mg-prospects { order: 3; } .mg-npb { order: 4; } .mg-refs { order: 5; } .mg-archive { order: 6; } .mg-rules { order: 7; }
 .menu-group > a, .menu-fold > summary { display: block; padding: 6px 4px; font-size: 16px; font-weight: 700; color: var(--ink); }
 .menu-fold > summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; }
 .menu-fold > summary::-webkit-details-marker { display: none; }
@@ -307,6 +308,8 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .wm-code { font-size: 16px; font-weight: 700; letter-spacing: .03em; font-variant-numeric: tabular-nums; }
 .wm-copy { appearance: none; font: inherit; font-size: 12px; font-weight: 700; color: var(--link); background: none; border: 1px solid var(--line); border-radius: 980px; padding: 3px 12px; cursor: pointer; white-space: nowrap; }
 .wm-copy:hover { border-color: var(--link); }
+.docs-tile { gap: 10px; flex-wrap: nowrap; padding: 16px 22px; }
+.docs-tile .btn { white-space: nowrap; }
 .live-cta { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
 .live-warn { text-align: center; font-size: 14px; color: var(--pending); }
 
@@ -525,6 +528,8 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
   .info-grid .info-tile .v { font-size: 17px; }
   .wm-tile { padding: 18px; }
   .wm-tile > .btn { width: 100%; text-align: center; }
+  .docs-tile { padding: 12px; }
+  .docs-tile > .btn { width: auto; flex: 1 1 0; min-width: 0; padding: 6px 8px; font-size: 13px; }
 }
 @media (max-width: 720px) {
   .band { padding: 36px 16px; }

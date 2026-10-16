@@ -164,6 +164,13 @@
         <div class="tile wm-tile">${wmJoin('btn')}<div class="wm-codes">${copyItem('ミーティングID', wm.meetingId)}${copyItem('パスコード', wm.passcode)}</div></div>
       </div>` : '';
 
+    // 当日使用資料（指名選手発表スライド・運営スプレッドシート）。Web会議の下に表示
+    const docLinks = [
+      CFG.slidesUrl ? ext(CFG.slidesUrl, '指名選手発表スライド', 'btn ghost btn-sm') : '',
+      CFG.sheetUrl ? ext(CFG.sheetUrl, '運営スプレッドシート', 'btn ghost btn-sm') : '',
+    ].filter(Boolean);
+    const docs = docLinks.length ? `<div class="wm" id="docs"><h3 class="wm-title">当日使用資料</h3><div class="tile wm-tile docs-tile">${docLinks.join('')}</div></div>` : '';
+
     const decided = m ? m.teams.filter(t => t.first).length : 0;
     const live = (ph !== 'before' && m) ? band(false, 'live',
       '',
@@ -204,24 +211,12 @@
           <div class="tile info-tile"><span class="k">時間</span><span class="v">${h(ev.timeLabel)}</span></div>
           <div class="tile info-tile"><span class="k">会場</span><span class="v">${h(ev.venue)}</span>${ext(ev.mapUrl, '会場地図（Google マップで開く）', 'more')}</div>
         </div>
-        ${meeting}`)}
+        ${meeting}
+        ${docs}`)}
       ${window.DraftFeatures && window.DraftFeatures.homeProspects ? window.DraftFeatures.homeProspects() : ''}
-      ${band(false, 'links', '', 'リンク', '', `
-        <div class="quick">
-          ${CFG.slidesUrl ? ext(CFG.slidesUrl, '<span class="quick-t">指名選手発表スライド</span><span class="quick-d">当日の指名選手発表で使うスライド（Google スライド）</span><span class="quick-go">スライドを開く</span>', 'quick-card') : ''}
-          ${CFG.sheetUrl ? ext(CFG.sheetUrl, '<span class="quick-t">運営スプレッドシート</span><span class="quick-d">指名入力・集計の正本（閲覧）</span><span class="quick-go">スプレッドシートを開く</span>', 'quick-card') : '<span class="quick-card is-disabled"><span class="quick-t">運営スプレッドシート</span><span class="quick-d">リンク未設定</span></span>'}
-          <a class="quick-card" href="#/archive"><span class="quick-t">過去の結果</span><span class="quick-d">2019〜${y - 1}年のアーカイブ</span><span class="quick-go">アーカイブを開く</span></a>
-          <a class="quick-card" href="#/prospects"><span class="quick-t">注目選手</span><span class="quick-d">ドラフト会議${y}の1位候補を中心に紹介</span><span class="quick-go">注目選手を見る</span></a>
-          <a class="quick-card" href="#/npb"><span class="quick-t">NPB 12球団の所属選手</span><span class="quick-d">支配下・育成の人数、年齢・ポジションの分布</span><span class="quick-go">戦力を見る</span></a>
-          <a class="quick-card" href="#/sim/${CFG.teams[0].id}"><span class="quick-t">指名人数シミュレーション</span><span class="quick-d">戦力外などを設定し、支配下枠から指名人数を検討</span><span class="quick-go">シミュレーションを開く</span></a>
-        </div>`)}
       ${band(true, 'teams', '', '参加12球団', res ? `最終更新 ${fmtDateTime(res.fetchedAt)}${res.source === 'demo' ? '（デモデータ）' : ''}` : '', `
         ${res && res.error ? `<div class="alert">最新データを取得できませんでした。${res.model ? '前回取得分を表示しています。' : ''} ${sheetLink('運営シートを開く', 'inline-link')}</div>` : ''}
-        <ul class="team-grid">${teamsList}</ul>`)}
-      ${band(false, 'rules', '', '会議のルール', '', `
-        <ol class="rules">${CFG.rules.map(r => `<li>${h(r)}</li>`).join('')}</ol>
-        ${CFG.npb ? `<a class="npb-card" href="#/rules"><span class="quick-t">NPB ドラフト会議の選択手順・概要</span><span class="quick-d">${CFG.npb.provisional ? `2026年の詳細公表まで、${CFG.npb.year}年版を暫定的に引用しています。` : `${CFG.npb.year}年版`}</span><span class="quick-go">選択手順・概要を見る</span></a>` : ''}`)}
-      <section class="band alt"><div class="inner">${references()}</div></section>`;
+        <ul class="team-grid">${teamsList}</ul>`)}`;
   }
 
   // ---------- ルール・選択手順 ----------
@@ -717,6 +712,7 @@
     const inBoard = (route.name === 'board' && route.year === y) || route.name === 'teams' || route.name === 'team';
     const inNpb = ['npb', 'npbTeam', 'sim', 'depth'].includes(route.name);
     const groups = [
+      { key: 'info', label: '会議情報', on: false, info: true },
       { key: 'top', parent: link('トップ', '#/', route.name === 'home') },
       { key: 'board', label: '指名状況', on: inBoard, children: [
         link(`${y}年 指名状況`, `#/${y}`, route.name === 'board' && route.year === y)],
@@ -738,14 +734,26 @@
     // ページが変わったら、そのページの親を開く
     const rk = location.hash;
     if (rk !== menuRouteKey) { menuRouteKey = rk; groups.forEach(g => { if (g.on) menuOpen.add(g.key); }); }
-    const html = g => g.parent
+    // 会議情報：下の階層に当日使うリンク（会場地図・Zoom・指名選手発表スライド・運営スプレッドシート）
+    const ev = CFG.event, wm = CFG.webMeeting && CFG.webMeeting.url ? CFG.webMeeting : null;
+    const infoLinks = [
+      ext(ev.mapUrl, '会場地図'),
+      wm ? ext(wm.url, `${h(wm.service)}リンク`) : '',
+      CFG.slidesUrl ? ext(CFG.slidesUrl, '指名選手発表スライド') : '',
+      CFG.sheetUrl ? ext(CFG.sheetUrl, '運営スプレッドシート') : '',
+    ].filter(Boolean);
+    const infoHtml = g => `<details class="menu-group menu-fold mg-${g.key}" data-fold="${g.key}"${menuOpen.has(g.key) ? ' open' : ''}>
+          <summary>${h(g.label)}</summary>
+          <ul class="menu-sub">${infoLinks.map(c => `<li>${c}</li>`).join('')}</ul>
+        </details>`;
+    const html = g => g.info ? infoHtml(g) : g.parent
       ? `<div class="menu-group mg-${g.key}">${g.parent}</div>`
       : `<details class="menu-group menu-fold mg-${g.key}" data-fold="${g.key}"${menuOpen.has(g.key) ? ' open' : ''}>
           <summary${g.on ? ' class="is-active"' : ''}>${h(g.label)}</summary>
           <ul class="menu-sub">${g.children.map(c => `<li>${c}</li>`).join('')}</ul>${g.more ? `<div class="menu-sub-more">${g.more}</div>` : ''}
         </details>`;
-    // PC は3列（左：トップ・指名状況・アーカイブ・ルール／中央：NPBデータ・参考リンク／右：注目選手）。スマホは1列で上の順
-    const cols = [['top', 'board', 'archive', 'rules'], ['npb', 'refs'], ['prospects']];
+    // PC は3列（左：トップ・会議情報・指名状況・アーカイブ・ルール／中央：NPBデータ・参考リンク／右：注目選手）。スマホは1列で上の順
+    const cols = [['top', 'info', 'board', 'archive', 'rules'], ['npb', 'refs'], ['prospects']];
     const byKey = Object.fromEntries(groups.map(g => [g.key, g]));
     nav.innerHTML = cols.map(keys => `<div class="menu-col">${keys.filter(k => byKey[k]).map(k => html(byKey[k])).join('')}</div>`).join('');
   }
