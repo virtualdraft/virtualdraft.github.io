@@ -347,7 +347,7 @@
         ${sourceNote()}`;
     }
     return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow"><a href="#/npb">NPB 12球団の所属選手</a></p><h1 class="page-title">${h(team.name)}</h1></div></div>
+      <div class="page-head"><div><h1 class="page-title">${h(team.name)}</h1></div></div>
       ${teamSwitch('npb', id)}
       ${body}
     </div>`;
@@ -465,7 +465,7 @@
         <p class="cite center">検討内容はこのブラウザにのみ保存され、他の人には共有されません。選手データの出典：NPB.jp 日本野球機構「選手一覧」。</p>`;
     }
     return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow"><a href="#/npb/${id}">${h(team.name)}の所属選手</a></p><h1 class="page-title"><span class="nobr">指名人数</span><span class="nobr">シミュレーション</span></h1>
+      <div class="page-head"><div><h1 class="page-title"><span class="nobr">指名人数</span><span class="nobr">シミュレーション</span></h1>
         <p class="muted">戦力外・引退・移籍などを自分で設定し、支配下枠と比べながらドラフトの指名人数を検討できます。</p></div></div>
       ${teamSwitch('sim', id)}
       ${body}
@@ -590,7 +590,7 @@
           出典：${ext('https://npb.jp/bis/' + (store.stats.year || CFG.currentYear) + '/stats/', 'NPB.jp 日本野球機構「個人守備成績」「個人投手成績」')}（一軍・ファーム）。本サイトで毎日自動取得しています。</p>`;
     }
     return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow"><a href="#/npb/${id}">${h(team.name)}の所属選手</a></p><h1 class="page-title">${SEASON_LABEL}</h1>
+      <div class="page-head"><div><h1 class="page-title">${SEASON_LABEL}</h1>
         <p class="muted">ポジションごとの序列と年齢を、今季の一軍・二軍の出場実績から並べています。</p></div></div>
       ${teamSwitch('depth', id)}
       ${body}
@@ -639,15 +639,12 @@
         let el = document.getElementById(id);
         if (!el && !/^#\/prospects/.test(location.hash)) {
           // トップページのボードから：注目選手ページへ移動してから、その選手の紹介までスクロール
-          location.hash = '#/prospects';
-          setTimeout(() => {
-            const t = document.getElementById(id);
-            if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); t.classList.add('is-flash'); }
-          }, 200);
+          UI().jumpTo('#/prospects', id, go.getAttribute('aria-label').replace(/（.*$/, ''));
           return;
         }
         if (!el) { view.prospects.cat = 'all'; view.prospects.pos = 'all'; UI().rerender(); el = document.getElementById(id); }
         if (el) {
+          UI().setCrumbExtra(go.getAttribute('aria-label').replace(/（.*$/, ''));
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
           el.classList.remove('is-flash'); void el.offsetWidth; el.classList.add('is-flash');
         }
@@ -718,6 +715,11 @@
         return { name: 'sim', id, title: `指名人数シミュレーション（${CFG.teams.find(t => t.id === id).short}）` };
       }
       return null;
+    },
+    // メニュー用：注目選手の名前と紹介欄の id（データ取得前は null）
+    prospectList() {
+      needProspects();
+      return store.prospects ? store.prospects.players.map(p => ({ name: p.name, id: pid(p) })) : null;
     },
     // トップページに載せる注目選手ボード（データ取得前は何も表示しない）
     homeProspects() {

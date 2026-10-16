@@ -437,7 +437,7 @@
   function viewTeams(year) {
     const res = state.results[year], m = res && res.model;
     return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow"><a href="#/${year}">${year}年 指名状況</a></p><h1 class="page-title">${year}年 球団別結果</h1></div>${yearTabs(year, '/teams')}</div>
+      <div class="page-head"><div><h1 class="page-title">${year}年 球団別結果</h1></div>${yearTabs(year, '/teams')}</div>
       ${statusBar(res, year)}
       ${m ? `<ul class="team-grid">${m.teams.map(t => `<li><a class="team-card" href="#/${year}/${t.id}" style="--team:${t.color}">
         <span class="team-card-name">${h(t.name)}</span><span class="team-card-owner">担当：${h(t.owner || '—')}</span>
@@ -506,7 +506,7 @@
         </div>`;
     }
     return `<div class="container">
-      <div class="page-head"><div><p class="eyebrow"><a href="#/${year}">${year}年 指名状況</a> ／ 球団別</p><h1 class="page-title">${h(base ? base.name : '球団')}</h1></div>${yearTabs(year, '/' + id)}</div>
+      <div class="page-head"><div><h1 class="page-title">${h(base ? base.name : '球団')}</h1></div>${yearTabs(year, '/' + id)}</div>
       ${switcher}
       ${body}
     </div>`;
@@ -544,6 +544,43 @@
     return { name: 'board', year };
   }
 
+  // ---------- パンくずリスト（トップ以外のページの上部に表示） ----------
+  function crumbs(route) {
+    const top = ['トップ', '#/'];
+    const yearBoard = y => y === CFG.currentYear ? [[`${y}年 指名状況`, `#/${y}`]] : [['アーカイブ', '#/archive'], [`${y}年 指名状況`, `#/${y}`]];
+    const npbTeam = id => [['NPBデータ', '#/npb'], [`${teamById(id).short}の所属選手`, `#/npb/${id}`]];
+    switch (route.name) {
+      case 'board': return [top, ...yearBoard(route.year)];
+      case 'teams': return [top, ...yearBoard(route.year), ['球団別結果', `#/${route.year}/teams`]];
+      case 'team': return [top, ...yearBoard(route.year), ['球団別結果', `#/${route.year}/teams`], [teamById(route.id).short, null]];
+      case 'archive': return [top, ['アーカイブ', null]];
+      case 'rules': return [top, ['ルール', null]];
+      case 'prospects': return [top, ['注目選手', '#/prospects']];
+      case 'npb': return [top, ['NPBデータ', null]];
+      case 'npbTeam': return [top, ...npbTeam(route.id)];
+      case 'sim': return [top, ...npbTeam(route.id), ['指名人数シミュレーション', null]];
+      case 'depth': return [top, ...npbTeam(route.id), [`${CFG.currentYear}年シーズン貢献度`, null]];
+      default: return null;
+    }
+  }
+  function breadcrumb(route) {
+    const list = crumbs(route);
+    if (!list) return '';
+    const last = list.length - 1;
+    const extra = state.crumbExtra && state.crumbExtra.hash === location.hash ? state.crumbExtra.label : '';
+    return `<nav class="breadcrumb" aria-label="現在地"><ol>${list.map(([label, href], i) =>
+      `<li>${href && i < last ? `<a href="${href}">${h(label)}</a>` : `<span${i === last && !extra ? ' aria-current="page"' : ''}>${h(label)}</span>`}</li>`).join('')}<li class="crumb-extra" data-crumb-extra${extra ? '' : ' hidden'}>${extra ? `<span aria-current="location">${h(extra)}</span>` : ''}</li></ol></nav>`;
+  }
+  // 注目選手ページで選手の紹介へ移動したときなど、ページ内の現在地をパンくずの末尾に足す
+  function setCrumbExtra(label) {
+    // 自動更新で描き直しても消えないよう、同じページにいる間は覚えておく
+    state.crumbExtra = label ? { hash: location.hash, label } : null;
+    const el = app.querySelector('[data-crumb-extra]');
+    if (!el) return;
+    el.hidden = !label;
+    el.innerHTML = label ? `<span aria-current="location">${h(label)}</span>` : '';
+  }
+
   function render(opts = {}) {
     const route = parseRoute();
     state.viewYear = route.year || null;
@@ -559,18 +596,29 @@
       case 'team': html = viewTeam(route.year, route.id); title = `${teamById(route.id).short}（${route.year}年）`; break;
       default: html = viewHome(); title = '';
     }
-    app.innerHTML = html;
+    app.innerHTML = breadcrumb(route) + html;
     document.title = title ? `${title}｜${CFG.eventName}` : `${CFG.eventName}｜仮想ドラフト会議`;
     app.querySelectorAll('[data-scroll]').forEach(el => { if (scrolls[el.dataset.scroll]) el.scrollLeft = scrolls[el.dataset.scroll]; });
-    document.querySelectorAll('.site-nav a').forEach(a => {
-      const n = a.dataset.nav;
-      const on = (n === 'home' && route.name === 'home') || (n === 'board' && route.name === 'board') ||
-        (n === 'teams' && (route.name === 'teams' || route.name === 'team')) || (n === 'archive' && route.name === 'archive') || (n === 'rules' && route.name === 'rules') ||
-        (n === 'prospects' && route.name === 'prospects') || (n === 'npb' && (route.name === 'npb' || route.name === 'npbTeam' || route.name === 'depth')) || (n === 'sim' && route.name === 'sim');
-      a.classList.toggle('is-active', on);
-      if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
-    });
+    renderMenu(route);
     if (opts.scrollTop) window.scrollTo(0, 0);
+    // 別ページから「その選手の紹介へ」移動したとき：描画が終わってからスクロールする
+    if (state.pendingJump) {
+      const { id, label } = state.pendingJump;
+      const el = document.getElementById(id);
+      if (el) {
+        state.pendingJump = null;
+        requestAnimationFrame(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.classList.remove('is-flash'); void el.offsetWidth; el.classList.add('is-flash');
+          setCrumbExtra(label);
+        });
+      }
+    }
+  }
+  // 注目選手ページの選手紹介へ移動（今いるページが注目選手ならその場でスクロール）
+  function jumpTo(hash, id, label) {
+    state.pendingJump = { id, label };
+    if (location.hash === hash) render(); else location.hash = hash;
   }
 
   // ---------- データ取得と自動更新 ----------
@@ -642,9 +690,101 @@
     }
   });
 
+  // ---------- ハンバーガーメニュー（階層つき） ----------
+  // 親：トップ／指名状況（球団別結果）／注目選手（各選手）／NPBデータ（シーズン貢献度・指名数シミュレーション）／アーカイブ／ルール
+  // 親（指名状況・注目選手・NPBデータ）は押すと下の階層が開く。今いるページの親は最初から開いておく
+  const menuOpen = new Set();
+  let menuRouteKey = null;
+  function renderMenu(route) {
+    const nav = document.querySelector('#site-menu .site-nav');
+    if (!nav) return;
+    const y = CFG.currentYear;
+    const teamId = ['npbTeam', 'sim', 'depth'].includes(route.name) ? route.id : CFG.teams[0].id;
+    const players = window.DraftFeatures && window.DraftFeatures.prospectList ? window.DraftFeatures.prospectList() : null;
+    const link = (label, href, on, extra = '') => `<a href="${href}"${on ? ' class="is-active" aria-current="page"' : ''}${extra}>${h(label)}</a>`;
+    // 階層の中の折りたたみ（球団別結果の各球団・注目選手の各選手）
+    const fold = (key, label, on, items) => {
+      if (on) menuOpen.add(key);
+      return `<details class="menu-more" data-fold="${key}"${menuOpen.has(key) ? ' open' : ''}><summary${on ? ' class="is-active"' : ''}>${h(label)}</summary><ul>${items.map(i => `<li>${i}</li>`).join('')}</ul></details>`;
+    };
+    // 参考リンク（外部サイト。新しいタブで開く）。プロ志望届は「高校生：…」「大学生：…」「大学生（準硬式）：…」をまとめて階層化
+    const refLinks = { other: [], shibou: [] };
+    (CFG.references || []).forEach(r => {
+      const m = r.label.match(/^(高校生|大学生(?:（準硬式）)?)：/);
+      if (m) refLinks.shibou.push(ext(r.url, h(m[1])));
+      else refLinks.other.push(ext(r.url, h(r.label)));
+    });
+    const inBoard = (route.name === 'board' && route.year === y) || route.name === 'teams' || route.name === 'team';
+    const inNpb = ['npb', 'npbTeam', 'sim', 'depth'].includes(route.name);
+    const groups = [
+      { key: 'top', parent: link('トップ', '#/', route.name === 'home') },
+      { key: 'board', label: '指名状況', on: inBoard, children: [
+        link(`${y}年 指名状況`, `#/${y}`, route.name === 'board' && route.year === y)],
+        more: fold('teams', '球団別結果', route.name === 'teams' || route.name === 'team', [
+          link('球団別結果（一覧）', `#/${y}/teams`, route.name === 'teams'),
+          ...CFG.teams.map(t => link(t.short, `#/${y}/${t.id}`, route.name === 'team' && route.id === t.id && route.year === y))]) },
+      { key: 'prospects', label: '注目選手', on: route.name === 'prospects', children: [
+        link('注目選手（一覧）', '#/prospects', route.name === 'prospects')],
+        more: players && players.length ? fold('players', `選手一覧（${players.length}人）`, false,
+          players.map(p => link(p.name, '#/prospects', false, ` data-player="${h(p.id)}"`))) : '' },
+      { key: 'npb', label: 'NPBデータ', on: inNpb, children: [
+        link('12球団の所属選手', '#/npb', route.name === 'npb' || route.name === 'npbTeam'),
+        link('シーズン貢献度', `#/depth/${teamId}`, route.name === 'depth'),
+        link('指名数シミュレーション', `#/sim/${teamId}`, route.name === 'sim')] },
+      { key: 'refs', label: '参考リンク', on: false, children: refLinks.other, more: refLinks.shibou.length ? fold('shibou', 'プロ志望届一覧', false, refLinks.shibou) : '' },
+      { key: 'archive', parent: link('アーカイブ', '#/archive', route.name === 'archive' || (route.name === 'board' && route.year !== y)) },
+      { key: 'rules', parent: link('ルール', '#/rules', route.name === 'rules') },
+    ];
+    // ページが変わったら、そのページの親を開く
+    const rk = location.hash;
+    if (rk !== menuRouteKey) { menuRouteKey = rk; groups.forEach(g => { if (g.on) menuOpen.add(g.key); }); }
+    const html = g => g.parent
+      ? `<div class="menu-group mg-${g.key}">${g.parent}</div>`
+      : `<details class="menu-group menu-fold mg-${g.key}" data-fold="${g.key}"${menuOpen.has(g.key) ? ' open' : ''}>
+          <summary${g.on ? ' class="is-active"' : ''}>${h(g.label)}</summary>
+          <ul class="menu-sub">${g.children.map(c => `<li>${c}</li>`).join('')}</ul>${g.more ? `<div class="menu-sub-more">${g.more}</div>` : ''}
+        </details>`;
+    // PC は3列（左：トップ・指名状況・アーカイブ・ルール／中央：NPBデータ・参考リンク／右：注目選手）。スマホは1列で上の順
+    const cols = [['top', 'board', 'archive', 'rules'], ['npb', 'refs'], ['prospects']];
+    const byKey = Object.fromEntries(groups.map(g => [g.key, g]));
+    nav.innerHTML = cols.map(keys => `<div class="menu-col">${keys.filter(k => byKey[k]).map(k => html(byKey[k])).join('')}</div>`).join('');
+  }
+
+
+  const menuBtn = document.querySelector('[data-menu-toggle]');
+  const menuPanel = document.getElementById('site-menu');
+  function setMenu(open) {
+    if (!menuBtn || !menuPanel) return;
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuPanel.hidden = !open;
+    document.body.classList.toggle('menu-open', open);
+  }
+  if (menuBtn) {
+    menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
+    // 開閉の状態を覚えておく（自動更新で描き直しても閉じないように）
+    menuPanel.addEventListener('toggle', e => {
+      const d = e.target.closest && e.target.closest('[data-fold]');
+      if (!d || d !== e.target) return;
+      if (d.open) menuOpen.add(d.dataset.fold); else menuOpen.delete(d.dataset.fold);
+    }, true);
+    menuPanel.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      setMenu(false);
+      const id = a.dataset.player;
+      if (!id) return;
+      // 注目選手の各選手：注目選手ページへ移動してから、その選手の紹介までスクロール
+      e.preventDefault();
+      jumpTo('#/prospects', id, a.textContent);
+    });
+    document.addEventListener('click', e => { if (!menuPanel.hidden && !e.target.closest('.site-header')) setMenu(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menuPanel.hidden) { setMenu(false); menuBtn.focus(); } });
+    window.addEventListener('hashchange', () => setMenu(false));
+  }
+
   // 追加機能（js/features.js）向けの共通部品
   window.DraftUI = {
-    h, ext, teamChip, player, scoreboard, fmtDateTime,
+    h, ext, teamChip, player, scoreboard, fmtDateTime, setCrumbExtra, jumpTo,
     currentResult: () => state.results[CFG.currentYear],
     rerender: () => render(),
   };
