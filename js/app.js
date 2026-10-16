@@ -154,6 +154,16 @@
         </div>
       </section>`;
 
+    // 当日のWeb会議の参加案内
+    const wm = CFG.webMeeting && CFG.webMeeting.url ? CFG.webMeeting : null;
+    const wmJoin = (cls = 'btn') => wm ? ext(wm.url, `${h(wm.service)}で参加する`, cls) : '';
+    const copyItem = (label, value) => value ? `<span class="wm-item"><span class="k">${label}</span><span class="wm-code">${h(value)}</span>
+      <button type="button" class="wm-copy" data-copy="${h(value.replace(/\s/g, ''))}" aria-label="${label}をコピー">コピー</button></span>` : '';
+    const meeting = wm ? `<div class="wm">
+        <h3 class="wm-title">Web会議（${h(wm.service)}）${phaseBadge}</h3>
+        <div class="tile wm-tile">${wmJoin('btn')}<div class="wm-codes">${copyItem('ミーティングID', wm.meetingId)}${copyItem('パスコード', wm.passcode)}</div></div>
+      </div>` : '';
+
     const decided = m ? m.teams.filter(t => t.first).length : 0;
     const live = (ph !== 'before' && m) ? band(false, 'live',
       '',
@@ -164,7 +174,7 @@
         { label: '育成 指名', value: m.totals.dev, unit: '名', cls: 'sb-dev' },
         { label: '1位 確定', value: decided, unit: `/${m.teams.length}` },
       ], `<span>${ph === 'live' ? '<i class="live-dot"></i>会議中' : '会議終了'}</span><span>最終更新 ${fmtTime(res.fetchedAt)}</span>`)}
-      <div class="live-cta"><a class="btn btn-lg" href="#/${y}">${ph === 'live' ? 'ライブ会議室（指名状況）に入る' : 'ドラフト結果を見る'}</a>${CFG.sheetUrl ? ext(CFG.sheetUrl, '運営スプレッドシートを開く', 'btn ghost btn-lg') : ''}</div>
+      <div class="live-cta"><a class="btn btn-lg" href="#/${y}">${ph === 'live' ? 'ライブ会議室（指名状況）に入る' : 'ドラフト結果を見る'}</a>${ph === 'live' ? wmJoin('btn btn-lg') : ''}${CFG.sheetUrl ? ext(CFG.sheetUrl, '運営スプレッドシートを開く', 'btn ghost btn-lg') : ''}</div>
       ${res.error ? `<p class="live-warn">※ 最新データの取得に失敗しています。前回取得分を表示中です。${sheetLink('運営シートで確認', 'inline-link')}</p>` : ''}`) : '';
 
     const teamsList = (m ? m.teams : CFG.teams).map(t => `
@@ -183,6 +193,7 @@
         <p class="sub">会場 ${h(ev.venue)}</p>
         <div class="ctas">
           <a class="btn" href="#/${y}">指名状況</a>
+          ${wmJoin('btn')}
           ${ext(ev.mapUrl, '会場地図（Google マップで開く）', 'btn ghost')}
         </div>
       </header>
@@ -192,10 +203,11 @@
           <div class="tile info-tile"><span class="k">開催日</span><span class="v">${h(ev.dateLabel)}</span></div>
           <div class="tile info-tile"><span class="k">時間</span><span class="v">${h(ev.timeLabel)}</span></div>
           <div class="tile info-tile"><span class="k">会場</span><span class="v">${h(ev.venue)}</span>${ext(ev.mapUrl, '会場地図（Google マップで開く）', 'more')}</div>
-        </div>`)}
+        </div>
+        ${meeting}`)}
       ${band(false, 'links', '', 'リンク', '', `
         <div class="quick">
-          <a class="quick-card" href="#/${y}"><span class="quick-t">指名状況</span><span class="quick-d">1位競合・本指名・育成指名を一覧で</span><span class="quick-go">指名状況を開く</span></a>
+          ${CFG.slidesUrl ? ext(CFG.slidesUrl, '<span class="quick-t">指名選手発表スライド</span><span class="quick-d">当日の指名選手発表で使うスライド（Google スライド）</span><span class="quick-go">スライドを開く</span>', 'quick-card') : ''}
           ${CFG.sheetUrl ? ext(CFG.sheetUrl, '<span class="quick-t">運営スプレッドシート</span><span class="quick-d">指名入力・集計の正本（閲覧）</span><span class="quick-go">スプレッドシートを開く</span>', 'quick-card') : '<span class="quick-card is-disabled"><span class="quick-t">運営スプレッドシート</span><span class="quick-d">リンク未設定</span></span>'}
           <a class="quick-card" href="#/archive"><span class="quick-t">過去の結果</span><span class="quick-d">2019〜${y - 1}年のアーカイブ</span><span class="quick-go">アーカイブを開く</span></a>
           <a class="quick-card" href="#/prospects"><span class="quick-t">注目選手</span><span class="quick-d">ドラフト会議${y}の1位候補を中心に紹介</span><span class="quick-go">注目選手を見る</span></a>
@@ -606,6 +618,13 @@
     else clearTimeout(state.timer);
   });
   app.addEventListener('click', e => {
+    const copy = e.target.closest('[data-copy]');
+    if (copy) {
+      const done = ok => { copy.textContent = ok ? 'コピーしました' : 'コピーできませんでした'; setTimeout(() => (copy.textContent = 'コピー'), 1600); };
+      if (navigator.clipboard) navigator.clipboard.writeText(copy.dataset.copy).then(() => done(true), () => done(false));
+      else done(false);
+      return;
+    }
     const chip = e.target.closest('[data-tlf]');
     if (chip || e.target.closest('[data-tlf-clear]')) {
       if (chip) {

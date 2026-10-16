@@ -17,6 +17,17 @@ window.DRAFT_CONFIG = {
       encodeURIComponent('ビジョンセンター虎ノ門溜池山王'),
   },
 
+  // 当日のWeb会議（トップページに参加案内を表示）。url を空にすると表示しません。
+  webMeeting: {
+    service: 'Zoom',
+    url: 'https://nec-global.zoom.us/j/92070502424?pwd=cN7xv2DQPK0tp2mnt3m0gwybsfshga.1',
+    meetingId: '920 7050 2424',
+    passcode: '363378',
+  },
+
+  // 当日の指名選手発表用スライド（トップページのリンク集に表示）。空欄なら表示しません。
+  slidesUrl: 'https://docs.google.com/presentation/d/1tPHtAHdROdlbFvwqrkRL4qx-E9pPpVsT/edit?slide=id.p1#slide=id.p1',
+
   // 運営スプレッドシート（閲覧用リンク）。未設定の場合、リンクは「未設定」と表示されます。
   sheetUrl: 'https://docs.google.com/spreadsheets/d/1GZCgZcPcCeJovxSHassUvSXURVfKXG2r55jXTlVEk6U/edit',
 
