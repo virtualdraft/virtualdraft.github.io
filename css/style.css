@@ -309,7 +309,7 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .wm-copy { appearance: none; font: inherit; font-size: 12px; font-weight: 700; color: var(--link); background: none; border: 1px solid var(--line); border-radius: 980px; padding: 3px 12px; cursor: pointer; white-space: nowrap; }
 .wm-copy:hover { border-color: var(--link); }
 .docs-tile { gap: 10px; flex-wrap: nowrap; padding: 16px 22px; }
-.docs-tile .btn { white-space: nowrap; }
+.docs-tile .btn { white-space: nowrap; flex: 1 1 0; min-width: 0; }
 .live-cta { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
 .live-warn { text-align: center; font-size: 14px; color: var(--pending); }
 
