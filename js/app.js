@@ -175,13 +175,13 @@
     const live = (ph !== 'before' && m) ? band(false, 'live',
       '',
       ph === 'live' ? 'ライブ会議室' : '会議結果',
-      '支配下・育成の指名数と、1位が確定した球団数です。',
+      '',
       `${scoreboard([
         { label: '支配下 指名', value: m.totals.main, unit: '名', cls: 'sb-main' },
         { label: '育成 指名', value: m.totals.dev, unit: '名', cls: 'sb-dev' },
         { label: '1位 確定', value: decided, unit: `/${m.teams.length}` },
       ], `<span>${ph === 'live' ? '<i class="live-dot"></i>会議中' : '会議終了'}</span><span>最終更新 ${fmtTime(res.fetchedAt)}</span>`)}
-      <div class="live-cta"><a class="btn btn-lg" href="#/${y}">${ph === 'live' ? 'ライブ会議室（指名状況）に入る' : 'ドラフト結果を見る'}</a>${ph === 'live' ? wmJoin('btn btn-lg') : ''}${CFG.sheetUrl ? ext(CFG.sheetUrl, '運営スプレッドシートを開く', 'btn ghost btn-lg') : ''}</div>
+      <div class="live-cta"><a class="btn btn-lg" href="#/${y}">${ph === 'live' ? 'ライブ会議室（指名状況）に入る' : 'ドラフト結果を見る'}</a>${ph === 'live' ? wmJoin('btn btn-lg') : ''}</div>
       ${res.error ? `<p class="live-warn">※ 最新データの取得に失敗しています。前回取得分を表示中です。${sheetLink('運営シートで確認', 'inline-link')}</p>` : ''}`) : '';
 
     const teamsList = (m ? m.teams : CFG.teams).map(t => `
@@ -198,7 +198,6 @@
         <p class="tag">開催日 ${h(ev.dateLabel)} ${h(ev.timeLabel)}</p>
         <p class="sub">会場 ${h(ev.venue)}</p>
         <div class="ctas">
-          <a class="btn" href="#/${y}">指名状況</a>
           ${wmJoin('btn')}
           ${ext(ev.mapUrl, '会場地図（Google マップで開く）', 'btn ghost')}
         </div>

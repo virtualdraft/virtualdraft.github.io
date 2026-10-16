@@ -99,9 +99,9 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
   overflow-x: auto; white-space: nowrap; scrollbar-width: none;
 }
 .header-inner::-webkit-scrollbar { display: none; }
-.brand { font-weight: 700; font-size: 14px; color: var(--nav-ink); display: flex; align-items: center; gap: 8px; flex: none; }
+.brand { font-weight: 800; font-size: 17px; letter-spacing: .02em; color: var(--nav-ink); display: flex; align-items: center; gap: 8px; flex: none; }
 .brand:hover { text-decoration: none; }
-.brand-mark { width: 11px; height: 11px; border: 2px solid currentColor; transform: rotate(45deg); border-radius: 1px; }
+.brand-mark { width: 12px; height: 12px; border: 2px solid currentColor; transform: rotate(45deg); border-radius: 1px; }
 /* ハンバーガーメニュー（ヘッダー右の「メニュー」ボタンで開閉） */
 .menu-btn { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; background: none; border: 0; border-radius: 8px; font: inherit; font-size: 13px; color: var(--nav-ink); cursor: pointer; }
 .menu-btn:hover { background: color-mix(in srgb, var(--nav-ink) 8%, transparent); }
