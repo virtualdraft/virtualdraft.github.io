@@ -111,9 +111,9 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .site-footer .container { max-width: 980px; padding: 16px 0 0; border-top: 1px solid var(--line); display: grid; gap: 6px; }
 
 /* ===== Bands / headings ===== */
-.band { padding: 72px 16px; }
+.band { padding: 48px 16px; }
 .band.alt { background: var(--band); }
-.inner { max-width: 980px; margin: 0 auto; display: grid; gap: 36px; }
+.inner { max-width: 980px; margin: 0 auto; display: grid; gap: 24px; }
 .head { text-align: center; display: grid; gap: 10px; justify-items: center; }
 .eyebrow { font-size: 14px; font-weight: 700; color: var(--link); }
 .eyebrow a { color: inherit; }
@@ -124,11 +124,11 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .more::after { content: " ›"; }
 
 /* ===== Hero ===== */
-.hero { padding: 88px 16px 72px; text-align: center; background: var(--page); }
+.hero { padding: 52px 16px 40px; text-align: center; background: var(--page); }
 .hero h1 { font-size: clamp(44px, 9vw, 80px); line-height: 1.05; letter-spacing: -.02em; }
 .hero .tag { font-size: clamp(21px, 3vw, 28px); font-weight: 500; margin-top: 12px; }
 .hero .sub { margin: 10px auto 0; }
-.hero-status { margin-bottom: 18px; display: flex; justify-content: center; }
+.hero-status { margin-bottom: 12px; display: flex; justify-content: center; }
 .ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
 
 /* ===== Buttons ===== */
@@ -247,7 +247,7 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 
 /* ライブ会議室 */
 /* Web会議（Zoom）の参加案内（開催情報の下） */
-.wm { margin-top: 40px; }
+.wm { margin-top: 28px; }
 .wm-title { font-size: 21px; margin: 0 0 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
 .wm-title .phase { font-size: 13px; background: var(--tile); }
 .wm-title .phase-live { background: var(--dark); }
@@ -475,8 +475,8 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
   .wm-tile > .btn { width: 100%; text-align: center; }
 }
 @media (max-width: 720px) {
-  .band { padding: 56px 16px; }
-  .hero { padding: 64px 16px 56px; }
+  .band { padding: 36px 16px; }
+  .hero { padding: 36px 16px 28px; }
   .page-head { padding: 44px 0 20px; }
   .tile, .panel, .quick-card { padding: 22px; }
   .scoreboard { padding: 20px 10px; }
@@ -669,8 +669,8 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .pb-logo { width: 64px; height: 64px; flex-shrink: 0; background: var(--btn); color: #fff; display: flex; align-items: center; justify-content: center; }
 .pb-spacer { width: 64px; flex-shrink: 0; }
 .pb-title { flex: 1; text-align: center; }
-.pb-title h1 { margin: 0; font-size: clamp(24px, 3.3vw, 52px); font-weight: 900; letter-spacing: .02em; line-height: 1.2; color: #fff; }
-.pb-title h1 small { font-size: .55em; font-weight: 700; margin-left: .2em; color: #c7c9d1; }
+.pb-title .pb-h { margin: 0; font-size: clamp(24px, 3.3vw, 52px); font-weight: 900; letter-spacing: .02em; line-height: 1.2; color: #fff; }
+.pb-title .pb-h small { font-size: .55em; font-weight: 700; margin-left: .2em; color: #c7c9d1; }
 .pb-title p { margin-top: 8px; font-size: 14px; color: #a1a4ad; }
 
 .pb-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; }
@@ -849,3 +849,21 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .age-sub { margin-top: -2px; }
 .age-sub .fchip { font-size: 13px; padding: 4px 14px; }
 .an-p i.lh { color: var(--main); font-weight: 700; }
+/* トップページに載せる注目選手ボード：カードの周りは白背景（ページと同じ色）。見出し・説明・凡例の文字もそれに合わせる */
+.pboard.is-home { background: var(--page); color: var(--ink); }
+.pboard.is-home .pb-wrap { padding-top: 48px; }
+.pb-home-head { margin-bottom: 24px; }
+.pboard.is-home .pb-legend { color: var(--muted); }
+.pboard.is-home .pb-legend .lg-k, .pboard.is-home .pb-legend .lg { color: var(--ink-2); }
+.pboard.is-home .pb-legend .lg.hs::before, .pboard.is-home .pb-legend .lg.univ::before, .pboard.is-home .pb-legend .lg.corp::before { outline-color: var(--line); }
+/* トップページに載せる注目選手ボード：細い画面では2列の小さめのカード（注目選手ページは1列の大きなカードのまま） */
+@media (max-width: 600px) {
+  .pboard.is-home .pb-wrap { padding-top: 36px; }
+  .pboard.is-home .pb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .pboard.is-home .pb-card { padding: 10px 6px; border-width: 2px; }
+  .pboard.is-home .pb-card::before { width: 22px; height: 22px; }
+  .pboard.is-home .pb-top, .pboard.is-home .pb-meta { font-size: 11px; }
+  .pboard.is-home .pb-meta { gap: 0 8px; }
+  .pboard.is-home .pb-name { font-size: 22px; }
+  .pboard.is-home .pb-name.long { font-size: 19px; }
+}

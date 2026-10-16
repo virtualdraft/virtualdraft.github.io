@@ -205,6 +205,7 @@
           <div class="tile info-tile"><span class="k">会場</span><span class="v">${h(ev.venue)}</span>${ext(ev.mapUrl, '会場地図（Google マップで開く）', 'more')}</div>
         </div>
         ${meeting}`)}
+      ${window.DraftFeatures && window.DraftFeatures.homeProspects ? window.DraftFeatures.homeProspects() : ''}
       ${band(false, 'links', '', 'リンク', '', `
         <div class="quick">
           ${CFG.slidesUrl ? ext(CFG.slidesUrl, '<span class="quick-t">指名選手発表スライド</span><span class="quick-d">当日の指名選手発表で使うスライド（Google スライド）</span><span class="quick-go">スライドを開く</span>', 'quick-card') : ''}

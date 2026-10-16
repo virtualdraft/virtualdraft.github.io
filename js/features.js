@@ -124,7 +124,7 @@
     giants: '読売', tigers: '阪神', baystars: '横浜DeNA', carp: '広島東洋', swallows: '東京ヤクルト', dragons: '中日',
     hawks: '福岡ソフトバンク', fighters: '北海道日本ハム', marines: '千葉ロッテ', eagles: '東北楽天', buffaloes: 'オリックス', lions: '埼玉西武',
   };
-  function prospectBoard(d) {
+  function prospectBoard(d, opts = {}) {
     const { h } = UI();
     const cards = d ? d.players.map(p => {
       const dr = draftedBy(p);
@@ -141,12 +141,15 @@
         <span class="pb-meta"><span>${h(p.pos)}</span><span>${h(p.team)}</span></span>
       </button>`;
     }).join('') : '';
-    return `<section class="pboard" aria-label="ドラフト会議${CFG.currentYear} 注目選手">
+    return `<section class="pboard${opts.home ? ' is-home' : ''}" aria-label="ドラフト会議${CFG.currentYear} 注目選手">
       <div class="pb-wrap">
-        <header class="pb-head">
-          <div class="pb-title"><h1>ドラフト会議${CFG.currentYear} 注目選手<small>（${d ? d.players.length : '—'}人）</small></h1>
+        ${opts.home
+          // トップページ：他の欄（開催情報・リンクなど）と同じ見出しの書体。人数・説明文は出さない
+          ? `<div class="head pb-home-head"><h2 class="h2">ドラフト会議${CFG.currentYear} 注目選手</h2></div>`
+          : `<header class="pb-head">
+          <div class="pb-title"><h1 class="pb-h">ドラフト会議${CFG.currentYear} 注目選手<small>（${d ? d.players.length : '—'}人）</small></h1>
             <p>1位候補を中心に紹介します。カードを押すと、その選手の紹介へ移動します。</p></div>
-        </header>
+        </header>`}
         ${d ? `<div class="pb-grid">${cards}</div>
         <p class="pb-legend"><span class="lg-k">カードの色</span><span class="lg hs">高校生</span><span class="lg univ">大学生</span><span class="lg corp">社会人</span></p>` : loadingBlock('prospects', '注目選手')}
       </div>
@@ -634,6 +637,15 @@
       if (go) {
         const id = go.dataset.goto;
         let el = document.getElementById(id);
+        if (!el && !/^#\/prospects/.test(location.hash)) {
+          // トップページのボードから：注目選手ページへ移動してから、その選手の紹介までスクロール
+          location.hash = '#/prospects';
+          setTimeout(() => {
+            const t = document.getElementById(id);
+            if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); t.classList.add('is-flash'); }
+          }, 200);
+          return;
+        }
         if (!el) { view.prospects.cat = 'all'; view.prospects.pos = 'all'; UI().rerender(); el = document.getElementById(id); }
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -706,6 +718,11 @@
         return { name: 'sim', id, title: `指名人数シミュレーション（${CFG.teams.find(t => t.id === id).short}）` };
       }
       return null;
+    },
+    // トップページに載せる注目選手ボード（データ取得前は何も表示しない）
+    homeProspects() {
+      needProspects();
+      return store.prospects ? prospectBoard(store.prospects, { home: true }) : '';
     },
     view(r) {
       if (r.name === 'prospects') return viewProspects();
