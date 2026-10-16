@@ -176,6 +176,30 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .hero-status { margin-bottom: 12px; display: flex; justify-content: center; }
 .ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
 
+/* 配色：スカイA ドラフト特集の色合いを参考（赤 #CC0000・紺 #202E5D・青 #0066FF）。ロゴ・写真・模様は使わない */
+:root { --btn: #CC0000; --btn-hover: #A80000; --link: #0066FF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --btn: #E01E1E; --btn-hover: #FF3B3B; --link: #4D94FF; } }
+:root[data-theme="dark"] { --btn: #E01E1E; --btn-hover: #FF3B3B; --link: #4D94FF; }
+.site-header { background: #202E5D; -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 5px solid #CC0000; }
+.site-header .brand, .site-header .menu-btn { color: #fff; }
+.site-header .menu-btn:hover { background: rgba(255,255,255,.16); }
+/* メニューの一覧もヘッダーと同じ紺。最上位は白、下の階層は薄い青みのグレー、今いるページは赤の下線 */
+.menu-panel { background: #202E5D; border-bottom-color: #CC0000; box-shadow: 0 12px 24px rgba(0,0,0,.25); }
+.menu-group { border-bottom-color: rgba(255,255,255,.18); }
+.menu-group > a, .menu-fold > summary { color: #fff; }
+.menu-sub a, .menu-more summary, .menu-more li a { color: #C9D2EC; }
+.menu-fold > summary::after, .menu-more summary::after { color: rgba(255,255,255,.6); }
+.site-nav a:hover { color: #fff; text-decoration: underline; }
+.menu-fold > summary:hover, .menu-more summary:hover { color: #fff; }
+.site-nav a.is-active { color: #fff; text-decoration: underline; text-decoration-color: #FF3B3B; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.menu-fold > summary.is-active, .menu-more summary.is-active { color: #fff; }
+.hero-skya { background: #202E5D; color: #fff; }
+.hero-skya h1, .hero-skya .tag { color: #fff; }
+.hero-skya .sub { color: #C9D2EC; }
+.hero-skya .phase { background: #CC0000; color: #fff; }
+.hero-skya .btn.ghost { color: #fff; border-color: rgba(255,255,255,.9); }
+.hero-skya .btn.ghost:hover { background: #fff; color: #202E5D; }
+
 /* ===== Buttons ===== */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 10px 22px; border-radius: 980px; font-size: 17px; background: var(--btn); color: var(--btn-ink); border: 1px solid transparent; cursor: pointer; }
 .btn:hover { text-decoration: none; background: var(--btn-hover); }

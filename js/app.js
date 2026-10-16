@@ -192,7 +192,7 @@
       </a></li>`).join('');
 
     return `
-      <header class="hero">
+      <header class="hero hero-skya">
         <div class="hero-status">${phaseBadge}</div>
         <h1>${CFG.eventName.split(' ').map(w => `<span class="nobr">${h(w)}</span>`).join(' ')}</h1>
         <p class="tag">開催日 ${h(ev.dateLabel)} ${h(ev.timeLabel)}</p>
