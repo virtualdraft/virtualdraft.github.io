@@ -188,7 +188,6 @@
       <li><a class="team-card" href="#/${y}/${t.id}" style="--team:${t.color}">
         <span class="team-card-name">${h(t.name)}</span>
         <span class="team-card-owner">担当：${h(t.owner || '未定')}</span>
-        ${t.declared ? `<span class="team-card-decl">明言：${h(t.declared.name)}</span>` : ''}
         ${ph !== 'before' && t.counts ? `<span class="team-card-counts"><b class="c-main">${t.counts.main}</b> 支配下 ／ <b class="c-dev">${t.counts.dev}</b> 育成</span>` : ''}
       </a></li>`).join('');
 
@@ -214,7 +213,7 @@
         ${meeting}
         ${docs}`)}
       ${window.DraftFeatures && window.DraftFeatures.homeProspects ? window.DraftFeatures.homeProspects() : ''}
-      ${band(true, 'teams', '', '参加12球団', res ? `最終更新 ${fmtDateTime(res.fetchedAt)}${res.source === 'demo' ? '（デモデータ）' : ''}` : '', `
+      ${band(true, 'teams', '', 'ドラフト参加球団', res ? `最終更新 ${fmtDateTime(res.fetchedAt)}${res.source === 'demo' ? '（デモデータ）' : ''}` : '', `
         ${res && res.error ? `<div class="alert">最新データを取得できませんでした。${res.model ? '前回取得分を表示しています。' : ''} ${sheetLink('運営シートを開く', 'inline-link')}</div>` : ''}
         <ul class="team-grid">${teamsList}</ul>`)}`;
   }
@@ -752,8 +751,8 @@
           <summary${g.on ? ' class="is-active"' : ''}>${h(g.label)}</summary>
           <ul class="menu-sub">${g.children.map(c => `<li>${c}</li>`).join('')}</ul>${g.more ? `<div class="menu-sub-more">${g.more}</div>` : ''}
         </details>`;
-    // PC は3列（左：トップ・会議情報・指名状況・アーカイブ・ルール／中央：NPBデータ・参考リンク／右：注目選手）。スマホは1列で上の順
-    const cols = [['top', 'info', 'board', 'archive', 'rules'], ['npb', 'refs'], ['prospects']];
+    // PC は3列（左：トップ・会議情報・指名状況／中央：注目選手・NPBデータ／右：参考リンク・アーカイブ・ルール）。スマホは1列で上の順
+    const cols = [['top', 'info', 'board'], ['prospects', 'npb'], ['refs', 'archive', 'rules']];
     const byKey = Object.fromEntries(groups.map(g => [g.key, g]));
     nav.innerHTML = cols.map(keys => `<div class="menu-col">${keys.filter(k => byKey[k]).map(k => html(byKey[k])).join('')}</div>`).join('');
   }

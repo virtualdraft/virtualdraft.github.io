@@ -328,6 +328,8 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .team-card { display: grid; gap: 4px; align-content: start; height: 100%; background: var(--tile); border-radius: var(--r-tile); padding: 20px 22px; color: var(--ink); }
 .band:not(.alt) .team-card, .container .team-card { background: var(--band); }
 .team-card::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--team); margin-bottom: 6px; }
+/* カードの枠を球団カラーで囲う */
+.team-card { border: 2px solid var(--team); }
 .team-card:hover { text-decoration: none; }
 .team-card:hover .team-card-name { color: var(--link); }
 .team-card-name { font-weight: 700; font-size: 17px; }
