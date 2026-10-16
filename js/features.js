@@ -145,7 +145,7 @@
       <div class="pb-wrap">
         ${opts.home
           // トップページ：他の欄（開催情報・リンクなど）と同じ見出しの書体。人数・説明文は出さない
-          ? `<div class="head pb-home-head"><h2 class="h2">ドラフト会議${CFG.currentYear} 注目選手</h2></div>`
+          ? `<div class="head pb-home-head"><h2 class="h2">注目選手</h2></div>`
           : `<header class="pb-head">
           <div class="pb-title"><h1 class="pb-h">ドラフト会議${CFG.currentYear} 注目選手<small>（${d ? d.players.length : '—'}人）</small></h1>
             <p>1位候補を中心に紹介します。カードを押すと、その選手の紹介へ移動します。</p></div>
