@@ -197,6 +197,7 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .hero-skya h1, .hero-skya .tag { color: #fff; }
 .hero-skya .sub { color: #C9D2EC; }
 .hero-skya .phase { background: #CC0000; color: #fff; }
+.hero-skya .phase-live { background: #000; }
 .hero-skya .btn.ghost { color: #fff; border-color: rgba(255,255,255,.9); }
 .hero-skya .btn.ghost:hover { background: #fff; color: #202E5D; }
 
