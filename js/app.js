@@ -199,7 +199,7 @@
       </header>
       ${live}
       ${band(true, 'info', '', '開催情報', '', `
-        <div class="tile-grid">
+        <div class="tile-grid info-grid">
           <div class="tile info-tile"><span class="k">開催日</span><span class="v">${h(ev.dateLabel)}</span></div>
           <div class="tile info-tile"><span class="k">時間</span><span class="v">${h(ev.timeLabel)}</span></div>
           <div class="tile info-tile"><span class="k">会場</span><span class="v">${h(ev.venue)}</span>${ext(ev.mapUrl, '会場地図（Google マップで開く）', 'more')}</div>

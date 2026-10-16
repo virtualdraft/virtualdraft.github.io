@@ -160,6 +160,11 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .info-tile { display: grid; gap: 8px; align-content: start; }
 .info-tile .v { font-size: 21px; font-weight: 700; line-height: 1.35; }
 .info-tile .g { font-size: 15px; color: var(--muted); }
+/* トップの開催情報：会場の枠を広くして会場名を1行に収め、3つの枠の縦幅を詰める */
+.info-grid { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr) minmax(0, 1.7fr); gap: 16px; }
+.info-grid .info-tile { padding: 18px 22px; gap: 4px; }
+.info-grid .info-tile .v { font-size: 19px; }
+.info-grid .info-tile .more { font-size: 14px; }
 
 /* 通常ページ内のパネル（＝タイル） */
 .panel { background: var(--band); border-radius: var(--r-tile); padding: 28px; }
@@ -471,6 +476,9 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 }
 @media (max-width: 820px) {
   .tile-grid, .quick, .ref-list, .rules { grid-template-columns: 1fr; }
+  .info-grid { gap: 10px; }
+  .info-grid .info-tile { padding: 14px 18px; }
+  .info-grid .info-tile .v { font-size: 17px; }
   .wm-tile { padding: 18px; }
   .wm-tile > .btn { width: 100%; text-align: center; }
 }
