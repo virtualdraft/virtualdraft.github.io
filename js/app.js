@@ -142,9 +142,12 @@
   function viewHome() {
     const y = CFG.currentYear, ph = phase(y), res = state.results[y], m = res && res.model;
     const ev = CFG.event;
-    const days = Math.ceil((Date.parse(ev.start) - Date.now()) / 86400000);
+    // 開催までの残り：前日まではあと○日、当日（24時間を切ったら）はあと○時間、1時間を切ったらあと○分
+    const left = Math.max(Date.parse(ev.start) - Date.now(), 0);
+    const until = left >= 86400000 ? `${Math.ceil(left / 86400000)}日`
+      : left >= 3600000 ? `${Math.floor(left / 3600000)}時間` : `${Math.max(Math.ceil(left / 60000), 1)}分`;
     const phaseBadge = ph === 'live' ? '<span class="phase phase-live"><i></i>LIVE 会議中</span>'
-      : ph === 'before' ? `<span class="phase">開催まで あと${Math.max(days, 0)}日</span>`
+      : ph === 'before' ? `<span class="phase">開催まで あと${until}</span>`
         : '<span class="phase">会議終了</span>';
     const band = (alt, id, eyebrow, title, sub, body) => `
       <section class="band${alt ? ' alt' : ''}"${id ? ` id="${id}"` : ''}>
@@ -681,6 +684,12 @@
       refresh(y).then(schedule);
     }
   });
+
+  // 開催前のトップページは、残り時間の表示が古くならないよう1分ごとに描き直す
+  setInterval(() => {
+    const r = parseRoute();
+    if (r.name === 'home' && phase(CFG.currentYear) === 'before' && !document.hidden) render();
+  }, 60000);
 
   // ---------- ハンバーガーメニュー（階層つき） ----------
   // 親：トップ／指名状況（球団別結果）／注目選手（各選手）／NPBデータ（シーズン貢献度・指名数シミュレーション）／アーカイブ／ルール
