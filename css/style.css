@@ -289,6 +289,10 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .pl-meta { font-size: 12px; color: var(--muted); }
 .pl-compact .pl-name { font-size: 14px; }
 .pl-compact .pl-meta { font-size: 11px; }
+.pl-badge { margin-top: 3px; }
+/* 注目選手の名前は、注目選手ページの紹介へのリンク */
+a.is-prospect { color: var(--link); }
+a.is-prospect:hover { text-decoration: underline; }
 .pl-prof { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .empty { color: var(--muted); }
 
@@ -415,7 +419,11 @@ code { font-family: var(--mono); font-size: .85em; background: var(--band); padd
 .tlf-chip { appearance: none; font: inherit; font-size: 13px; font-weight: 700; color: var(--ink); background: var(--tile); border: 1px solid var(--line); border-radius: 980px; padding: 5px 14px; cursor: pointer; }
 .tlf-chip:hover { border-color: var(--main); }
 .tlf-chip[aria-pressed="true"] { background: var(--main); border-color: var(--main); color: #fff; }
-.tlf-note { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+.tlf-note { margin: 0; font-size: 12px; color: var(--muted); }
+.tlf-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; margin-top: 2px; }
+.tlf-clear { appearance: none; font: inherit; font-size: 13px; font-weight: 700; color: var(--link); background: var(--tile); border: 1px solid var(--link); border-radius: 980px; padding: 5px 16px; cursor: pointer; white-space: nowrap; }
+.tlf-clear:hover:not(:disabled) { background: var(--link); color: #fff; }
+.tlf-clear:disabled { color: var(--muted); border-color: var(--line); cursor: default; }
 .tlf-count { margin: 0 0 18px; font-size: 13px; color: var(--muted); display: flex; gap: 14px; align-items: baseline; }
 .tlf-count b { color: var(--ink); font-size: 15px; }
 .hscroll { overflow: auto; border-radius: var(--r-tile); background: var(--band); max-height: 80vh; }

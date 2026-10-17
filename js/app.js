@@ -60,12 +60,33 @@
   const profLine = pr => [pr.category, pr.hand, pr.age != null ? `${pr.age}歳` : '',
     pr.height && pr.weight ? `${pr.height}cm/${pr.weight}kg` : pr.height ? `${pr.height}cm` : ''].filter(Boolean).join('・');
 
+  // プロ志望届（高校生・大学生のみ）。注目選手ページと同じ表記・色
+  const shibouBadge = pr => {
+    if (!pr || !pr.shibou || !pr.shibou.status) return '';
+    if (pr.shibou.status === '提出済') return `<span class="pbadge ok">志望届 提出済${pr.shibou.date ? `（${h(pr.shibou.date)}）` : ''}</span>`;
+    return `<span class="pbadge warn">志望届 ${h(pr.shibou.status)}</span>`;
+  };
+
+  // 注目選手に選んだ選手が指名されたら、選手名を注目選手ページのその選手の紹介へのリンクにする（当年のみ）
+  function prospectOf(p) {
+    if (!p || state.viewYear !== CFG.currentYear || !window.DraftFeatures || !window.DraftFeatures.prospectList) return null;
+    const list = window.DraftFeatures.prospectList();
+    return (list && list.find(x => nameKey(x.name) === nameKey(p.name))) || null;
+  }
+  const nameHtml = (p, cls) => {
+    const hit = prospectOf(p);
+    return hit
+      ? `<a class="${cls} is-prospect" href="#/prospects" data-prospect="${h(hit.id)}" data-prospect-name="${h(hit.name)}" title="注目選手の紹介を見る">${h(p.name)}</a>`
+      : `<span class="${cls}">${h(p.name)}</span>`;
+  };
+
   function player(p, opts = {}) {
     if (!p) return '<span class="empty">—</span>';
     const pr = profileOf(p);
     const meta = pr ? [profPos(pr) || p.pos, pr.team].filter(Boolean).join('・') : [p.pos, p.school].filter(Boolean).join('・');
     const line = pr && !opts.compact ? profLine(pr) : '';
-    return `<span class="pl${opts.compact ? ' pl-compact' : ''}"><span class="pl-name">${h(p.name)}</span>${meta ? `<span class="pl-meta">${h(meta)}</span>` : ''}${line ? `<span class="pl-prof">${h(line)}</span>` : ''}</span>`;
+    const badge = pr && !opts.compact ? shibouBadge(pr) : '';
+    return `<span class="pl${opts.compact ? ' pl-compact' : ''}">${nameHtml(p, 'pl-name')}${meta ? `<span class="pl-meta">${h(meta)}</span>` : ''}${line ? `<span class="pl-prof">${h(line)}</span>` : ''}${badge ? `<span class="pl-badge">${badge}</span>` : ''}</span>`;
   }
 
   function teamChip(t, opts = {}) {
@@ -356,7 +377,10 @@
       ${cats.length ? group('cat', 'カテゴリ', cats) : ''}
       ${group('pos', 'ポジション', TLF_POS)}
       ${group('hand', '投打', hands)}
-      <p class="tlf-note">投手は投げ手（右投・左投）、野手は打席（右打・左打・両打）で絞り込みます。兼任ポジションの選手はどちらのポジションにも表示します。</p>
+      <div class="tlf-foot">
+        <p class="tlf-note">投手は投げ手（右投・左投）、野手は打席（右打・左打・両打）で絞り込みます。兼任ポジションの選手はどちらのポジションにも表示します。</p>
+        <button type="button" class="tlf-clear" data-tlf-clear${tlfActive() ? '' : ' disabled'}>すべてクリア</button>
+      </div>
     </div>`;
   }
 
@@ -386,7 +410,7 @@
         `<li><a href="#/${y}/${t.id}">${teamChip(t)}</a>${player(x.player)}</li>`).join('')}</ul></li>`);
     }
     const total = all.length;
-    const bar = withProfiles && total ? `${tlFilterBar(all)}<p class="tlf-count" aria-live="polite"><span>${active ? `${total}名中 <b>${shown}</b>名を表示` : `${total}名`}</span>${active ? '<button type="button" class="linkish" data-tlf-clear>絞り込みを解除</button>' : ''}</p>` : '';
+    const bar = withProfiles && total ? `${tlFilterBar(all)}<p class="tlf-count" aria-live="polite"><span>${active ? `${total}名中 <b>${shown}</b>名を表示` : `${total}名`}</span></p>` : '';
     const empty = active ? '<p class="muted">条件に当てはまる選手はいません。</p>' : '<p class="muted">まだ指名はありません。</p>';
     return `<div class="board-sp"><h2 class="section-title"><span class="only-pc">指名選手一覧</span><span class="only-sp">指名タイムライン</span></h2>${bar}${blocks.length ? `<ol class="timeline">${blocks.join('')}</ol>` : empty}</div>`;
   }
@@ -457,7 +481,7 @@
     return `<ol class="picks picks-${kind}">${list.map(x => {
       const pr = profileOf(x.player), line = pr ? profLine(pr) : '';
       return `<li><span class="pick-rank">${kind === 'dev' ? '育成' : ''}${x.rank}位</span>
-      <span class="pick-name">${h(x.player.name)}</span><span class="pick-pos">${h((pr && profPos(pr)) || x.player.pos || '—')}</span><span class="pick-school">${h((pr && pr.team) || x.player.school || '')}</span>${line ? `<span class="pick-prof">${h(line)}</span>` : ''}</li>`;
+      ${nameHtml(x.player, 'pick-name')}<span class="pick-pos">${h((pr && profPos(pr)) || x.player.pos || '—')}</span><span class="pick-school">${h((pr && pr.team) || x.player.school || '')}</span>${line || (pr && pr.shibou) ? `<span class="pick-prof">${h(line)}${shibouBadge(pr) ? ` ${shibouBadge(pr)}` : ''}</span>` : ''}</li>`;
     }).join('')}</ol>`;
   }
 
@@ -596,25 +620,24 @@
     app.querySelectorAll('[data-scroll]').forEach(el => { if (scrolls[el.dataset.scroll]) el.scrollLeft = scrolls[el.dataset.scroll]; });
     renderMenu(route);
     if (opts.scrollTop) window.scrollTo(0, 0);
-    // 別ページから「その選手の紹介へ」移動したとき：描画が終わってからスクロールする
-    if (state.pendingJump) {
-      const { id, label } = state.pendingJump;
-      const el = document.getElementById(id);
-      if (el) {
-        state.pendingJump = null;
-        requestAnimationFrame(() => {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          el.classList.remove('is-flash'); void el.offsetWidth; el.classList.add('is-flash');
-          setCrumbExtra(label);
-        });
-      }
-    }
   }
   // 注目選手ページの選手紹介へ移動（今いるページが注目選手ならその場でスクロール）
   function jumpTo(hash, id, label) {
-    state.pendingJump = { id, label };
-    if (location.hash === hash) render(); else location.hash = hash;
+    // 注目選手ページの描画（先頭へのスクロールを含む）が終わってから、その選手の紹介までスクロールする
+    const go = (tries = 0) => {
+      const el = document.getElementById(id);
+      if (parseRoute().name === 'prospects' && el) {
+        setTimeout(() => {
+          const t = document.getElementById(id) || el;
+          t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          t.classList.remove('is-flash'); void t.offsetWidth; t.classList.add('is-flash');
+          setCrumbExtra(label);
+        }, 60);
+      } else if (tries < 60) setTimeout(() => go(tries + 1), 50);
+    };
+    if (location.hash === hash) go(); else { location.hash = hash; setTimeout(go, 0); }
   }
+
 
   // ---------- データ取得と自動更新 ----------
   async function refresh(year) {
@@ -662,6 +685,12 @@
     else clearTimeout(state.timer);
   });
   app.addEventListener('click', e => {
+    const pros = e.target.closest('[data-prospect]');
+    if (pros) {
+      e.preventDefault();
+      jumpTo('#/prospects', pros.dataset.prospect, pros.dataset.prospectName);
+      return;
+    }
     const copy = e.target.closest('[data-copy]');
     if (copy) {
       const done = ok => { copy.textContent = ok ? 'コピーしました' : 'コピーできませんでした'; setTimeout(() => (copy.textContent = 'コピー'), 1600); };
