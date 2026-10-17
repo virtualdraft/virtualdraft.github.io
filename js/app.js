@@ -422,7 +422,6 @@
         ${yearTabs(year)}
       </div>
       ${body}
-      ${references()}
     </div>`;
   }
 
