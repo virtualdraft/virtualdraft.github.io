@@ -781,7 +781,7 @@ a.is-prospect:hover { text-decoration: underline; }
 /* カードの地色：区分 */
 .pb-card.cat-hs   { --card-bg: #1c1f27; }
 .pb-card.cat-univ { --card-bg: #14213d; }
-.pb-card.cat-corp { --card-bg: #23252b; }
+.pb-card.cat-corp { --card-bg: #363b46; }
 /* 枠・左上の三角：ポジション */
 .pb-card.pos-p  { --ac: #e2283c; }
 .pb-card.pos-c  { --ac: #4fa3e0; }
@@ -803,7 +803,7 @@ a.is-prospect:hover { text-decoration: underline; }
 .pb-legend .lg-k { font-weight: 700; color: #c7c9d1; }
 .pb-legend .hs, .pb-legend .univ, .pb-legend .corp { --lg: none; }
 .pb-legend .lg.hs::before, .pb-legend .lg.univ::before, .pb-legend .lg.corp::before { clip-path: none; width: 16px; height: 16px; background: var(--sw); outline: 1px solid rgba(255,255,255,.35); }
-.pb-legend .hs { --sw: #1c1f27; } .pb-legend .univ { --sw: #14213d; } .pb-legend .corp { --sw: #23252b; }
+.pb-legend .hs { --sw: #1c1f27; } .pb-legend .univ { --sw: #14213d; } .pb-legend .corp { --sw: #363b46; }
 .pb-legend .p { --lg: #e2283c; }
 .pb-legend .c { --lg: #4fa3e0; }
 .pb-legend .if { --lg: #ffe100; }
