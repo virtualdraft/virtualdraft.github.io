@@ -12,7 +12,7 @@
   const CFG = window.DRAFT_CONFIG;
   const YEARS = Object.keys(CFG.years).map(Number).sort((a, b) => b - a);
   const app = document.getElementById('app');
-  const state = { results: {}, timer: null, loadingYear: null, profiles: null, viewYear: null };
+  const state = { results: {}, timer: null, loadingYear: null, profiles: null, undrafted: null, viewYear: null };
 
   // ---------- 開催状態 ----------
   const phaseOverride = new URLSearchParams(location.search).get('phase');
@@ -415,6 +415,24 @@
     return `<div class="board-sp"><h2 class="section-title"><span class="only-pc">指名選手一覧</span><span class="only-sp">指名タイムライン</span></h2>${bar}${blocks.length ? `<ol class="timeline">${blocks.join('')}</ol>` : empty}</div>`;
   }
 
+  // ---------- 主な指名漏れ選手（候補DBで1位〜下位と想定していた選手のうち、指名されなかった選手） ----------
+  // 全球団が本指名・育成ともに選択終了したら（または会議終了後に）表示する
+  function undraftedSection(m) {
+    if (m.year !== CFG.currentYear || !state.undrafted || !state.undrafted.length) return '';
+    const done = m.teams.every(t => t.endMain && t.endDev);
+    if (!done && phase(m.year) !== 'after') return '';
+    const order = ['高校生', '大学生', '社会人', '独立'];
+    const groups = {};
+    state.undrafted.forEach(p => (groups[p.category] = groups[p.category] || []).push(p));
+    const cats = Object.keys(groups).sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99));
+    const card = pr => `<li>${nameHtml({ name: pr.name }, 'ud-name')}<span class="ud-meta">${h([profPos(pr), pr.team].filter(Boolean).join('・'))}</span>
+      <span class="ud-prof">${h([pr.hand, pr.age != null ? `${pr.age}歳` : '', pr.height && pr.weight ? `${pr.height}cm/${pr.weight}kg` : ''].filter(Boolean).join('・'))}</span>${shibouBadge(pr) ? `<span class="pl-badge">${shibouBadge(pr)}</span>` : ''}</li>`;
+    return `<section class="section undrafted">
+      <h2 class="section-title">主な指名漏れ選手<small>（${state.undrafted.length}人）</small></h2>
+      ${cats.map(c => `<h3 class="ud-cat">${h(c)}<small>${groups[c].length}人</small></h3><ul class="ud-list">${groups[c].map(card).join('')}</ul>`).join('')}
+    </section>`;
+  }
+
   function teamLinks(m) {
     return `<section class="section"><h2 class="section-title">球団別の指名結果</h2>
       <ul class="team-links">${m.teams.map(t => `<li><a href="#/${m.year}/${t.id}" style="--team:${t.color}"><i class="dot"></i>${h(t.short)}<span><b class="c-main">${t.counts.main}</b>/<b class="c-dev">${t.counts.dev}</b></span></a></li>`).join('')}</ul></section>`;
@@ -441,6 +459,7 @@
           ${boardTable(m)}
           ${boardTimeline(m)}
         </section>
+        ${undraftedSection(m)}
         ${teamLinks(m)}`;
     }
     return `<div class="container">
@@ -646,8 +665,9 @@
     if (year === CFG.currentYear) {
       window.DraftData.loadProfiles().then(prof => {
         if (!prof) return;
-        const changed = JSON.stringify(prof.players) !== JSON.stringify(state.profiles);
+        const changed = JSON.stringify([prof.players, prof.undrafted]) !== JSON.stringify([state.profiles, state.undrafted]);
         state.profiles = prof.players;
+        state.undrafted = prof.undrafted || null;
         if (changed && (parseRoute().year || CFG.currentYear) === year) render();
       });
     }

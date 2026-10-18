@@ -959,3 +959,11 @@ a.is-prospect:hover { text-decoration: underline; }
   .pboard.is-home .pb-name { font-size: 22px; }
   .pboard.is-home .pb-name.long { font-size: 19px; }
 }
+/* 主な指名漏れ選手 */
+.undrafted .section-title small { font-size: 15px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+.ud-cat { font-size: 18px; margin: 22px 0 10px; display: flex; align-items: baseline; gap: 8px; }
+.ud-cat small { font-size: 13px; font-weight: 500; color: var(--muted); }
+.ud-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px; }
+.ud-list li { display: grid; gap: 2px; align-content: start; background: var(--band); border-radius: 14px; padding: 12px 14px; box-shadow: inset 3px 0 0 var(--muted); }
+.ud-name { font-weight: 700; font-size: 16px; }
+.ud-meta, .ud-prof { font-size: 12px; color: var(--muted); }
